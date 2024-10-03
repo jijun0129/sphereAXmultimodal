@@ -1,5 +1,5 @@
 module.exports = {
-    db: 'mongodb://localhost:27017/tester', // 
+    db: 'mongodb://mongodb:27017/tester', // 
 
-    UsertokenSecret:'mv\5ecr3t' 
+    UsertokenSecret:'mv\5ecr3t'
 };
