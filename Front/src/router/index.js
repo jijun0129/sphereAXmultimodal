@@ -10,6 +10,21 @@ const routes = [
 		name: 'main',
 		component: () => import('@/pages/main.vue'),
 	},
+	{
+		path: '/login',
+		name: 'login',
+		component: () => import('@/pages/login.vue'),
+	},
+	{
+		path: '/log',
+		name: 'log',
+		component: () => import('@/pages/log.vue'),
+	},
+	{
+		path: '/bookmark',
+		name: 'bookmark',
+		component: () => import('@/pages/bookmark.vue'),
+	},
 ];
 
 const router = createRouter({

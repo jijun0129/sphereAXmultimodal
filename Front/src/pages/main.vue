@@ -1,4 +1,5 @@
 <template>
+	<the-header></the-header>
 	<div class="h-screen flex flex-col justify-center items-center px-96">
 		<n-upload multiple directory-dnd :max="5">
 			<n-upload-dragger>
@@ -69,6 +70,7 @@ import {
 	BookmarkOutline,
 	BookmarkSharp,
 } from '@vicons/ionicons5';
+import TheHeader from '../components/layout/TheHeader.vue';
 /* import { useAxios } from '@/composables/useAxios';
 import { useSocket } from '@/composables/useSocket'; */
 
