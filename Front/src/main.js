@@ -5,7 +5,9 @@ import router from './router/index.js';
 import pinia from './store/index.js';
 import axiosInstance from './plugins/axios';
 import socket from './plugins/socket';
+import TheHeader from './components/layout/TheHeader.vue';
 import BaseButton from './components/UI/BaseButton.vue';
+import BaseCard from './components/UI/BaseCard.vue';
 
 const app = createApp(App);
 
@@ -15,6 +17,8 @@ app.config.globalProperties.$socket = socket;
 app.use(router);
 app.use(pinia);
 
+app.component('the-header', TheHeader);
 app.component('base-button', BaseButton);
+app.component('base-card', BaseCard);
 
 app.mount('#app');

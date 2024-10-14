@@ -1,89 +1,70 @@
 <template>
 	<the-header></the-header>
-	<div class="h-screen flex flex-col justify-center items-center px-96">
-		<n-upload multiple directory-dnd :max="5">
-			<n-upload-dragger>
-				<div class="mb-3">
-					<n-icon size="48" :depth="3">
-						<ArchiveOutline />
-					</n-icon>
-				</div>
-				<n-text class="text-base">
-					파일을 업로드하려면 이 영역을 클릭하거나 파일을 끌어다 놓으세요.
-				</n-text>
-				<n-p depth="3" class="mt-2">
-					궁금한 점 있으시면 편하게 연락주세요 궁금한 점 있으시면 편하게
-					연락주세요 궁금한 점 있으시면 편하게 연락주세요 궁금한 점 있으시면
-					편하게 연락주세요
-				</n-p>
-			</n-upload-dragger>
-		</n-upload>
+	<div class="h-screen flex justify-center mt-40">
+		<n-card
+			content-style="display: flex; flex-direction: column; justify-content: space-between;"
+		>
+			<n-upload
+				multiple
+				directory-dnd
+				:max="1"
+				class="mt-20 mx-auto"
+				style="width: 85%"
+			>
+				<n-upload-dragger style="height: 250px">
+					<div class="mb-6 mt-5">
+						<n-icon size="48" :depth="3">
+							<ArchiveOutline />
+						</n-icon>
+					</div>
+					<n-text class="text-base">
+						파일을 업로드하려면 이 영역을 클릭하거나 파일을 끌어다 놓으세요.
+					</n-text>
+					<n-p depth="3" class="mt-3">
+						이미지 파일을 한 장 업로드 해주세요
+					</n-p>
+				</n-upload-dragger>
+			</n-upload>
 
-		<div class="mt-4">
-			<n-space>
-				<n-card
-					v-for="(item, index) in 5"
-					size="small"
-					title="Title"
-					class="w-40"
-				>
-					<template #header-extra>
+			<div class="mb-20 mx-auto" style="width: 85%">
+				<n-space justify="space-between">
+					<n-input
+						v-model:value="inputText"
+						type="textarea"
+						placeholder="텍스트를 입력해주세요"
+					/>
+					<div class="mt-12">
 						<n-button
 							type="primary"
-							quaternary
-							circle
-							@click="toggleBookmark(index)"
-						>
-							<template #icon>
-								<n-icon>
-									<BookmarkOutline v-if="!bookmarked[index]" />
-									<BookmarkSharp v-else />
-								</n-icon>
-							</template>
+							size="large"
+							round
+							:disabled="!inputText"
+							@click="onSubmit"
+							>제출하기
 						</n-button>
-					</template>
-					<template #cover>
-						<div class="bg-black h-32 w-full flex justify-center items-center">
-							IMG
-						</div>
-					</template>
-					Content
-				</n-card>
-			</n-space>
-		</div>
-
-		<div class="mt-4">
-			<n-space>
-				<n-input v-model:value="text"></n-input>
-				<n-button type="primary" :disabled="!text">제출하기</n-button>
-			</n-space>
-			<div class="mt-2.5 flex justify-center">
-				<n-input :value="text" show-count readonly />
+					</div>
+				</n-space>
 			</div>
-		</div>
+		</n-card>
 	</div>
 </template>
 <script setup>
 import { ref } from 'vue';
-import {
-	ArchiveOutline,
-	BookmarkOutline,
-	BookmarkSharp,
-} from '@vicons/ionicons5';
-import TheHeader from '../components/layout/TheHeader.vue';
+import { ArchiveOutline } from '@vicons/ionicons5';
+import { useTextStore } from '../store';
+import { useRouter } from 'vue-router';
 /* import { useAxios } from '@/composables/useAxios';
 import { useSocket } from '@/composables/useSocket'; */
 
 /* const { axios } = useAxios();
 const { socket } = useSocket(); */
-
-const bookmarked = ref([false, false, false, true, false]);
-const text = ref(); // input
-
-const toggleBookmark = index => {
-	bookmarked.value[index] = !bookmarked.value[index];
+const router = useRouter();
+const inputText = ref('');
+const text = useTextStore();
+const onSubmit = () => {
+	text.setText(inputText.value);
+	router.replace('/result');
 };
-
 // axios 및 socket 사용 방법 - 주석 처리된 부분 확인
 /* onMounted(() => {
 	// HTTP 요청 예시
@@ -106,4 +87,20 @@ const sendMessage = () => {
 	socket.emit('chat message', 'Hello, server!');
 }; */
 </script>
-<style scoped></style>
+<style scoped>
+.center {
+	display: flex;
+	flex-direction: column;
+	align-items: center; /* 수평 중앙 정렬 */
+	justify-content: center; /* 수직 중앙 정렬 */
+	height: 90vh;
+}
+.n-card {
+	border-radius: 25px;
+	width: 60%;
+	height: 60%;
+}
+.n-input {
+	width: 900px;
+}
+</style>

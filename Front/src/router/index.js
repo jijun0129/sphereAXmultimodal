@@ -16,6 +16,11 @@ const routes = [
 		component: () => import('@/pages/login.vue'),
 	},
 	{
+		path: '/result',
+		name: 'result',
+		component: () => import('@/pages/result.vue'),
+	},
+	{
 		path: '/log',
 		name: 'log',
 		component: () => import('@/pages/log.vue'),
