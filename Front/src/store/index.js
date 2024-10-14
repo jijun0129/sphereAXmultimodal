@@ -10,4 +10,13 @@ export const useTextStore = defineStore('text', () => {
 	return { text, setText };
 });
 
+export const useBookmarkStore = defineStore('bookmark', () => {
+	const bookmark = ref([false, false, false, true, false]);
+	const toggleBookmark = index => {
+		bookmark.value[index] = !bookmarked.value[index];
+	};
+
+	return { bookmark, toggleBookmark };
+});
+
 export default pinia;
