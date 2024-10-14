@@ -11,8 +11,8 @@
 				class="mt-20 mx-auto"
 				style="width: 85%"
 			>
-				<n-upload-dragger style="height: 200px">
-					<div class="mb-5 mt-3">
+				<n-upload-dragger style="height: 250px">
+					<div class="mb-6 mt-5">
 						<n-icon size="48" :depth="3">
 							<ArchiveOutline />
 						</n-icon>
@@ -20,23 +20,25 @@
 					<n-text class="text-base">
 						파일을 업로드하려면 이 영역을 클릭하거나 파일을 끌어다 놓으세요.
 					</n-text>
-					<n-p depth="3" class="mt-2"> 이미지 파일을 한장 업로드 해주세요 </n-p>
+					<n-p depth="3" class="mt-3">
+						이미지 파일을 한 장 업로드 해주세요
+					</n-p>
 				</n-upload-dragger>
 			</n-upload>
 
-			<div class="mb-20 mx-auto" style="width: 80%">
+			<div class="mb-20 mx-auto" style="width: 85%">
 				<n-space justify="space-between">
 					<n-input
-						v-model:value="text"
+						v-model:value="inputText"
 						type="textarea"
-						placeholder="Basic Textarea"
+						placeholder="텍스트를 입력해주세요"
 					/>
 					<div class="mt-12">
 						<n-button
 							type="primary"
 							size="large"
 							round
-							:disabled="!text"
+							:disabled="!inputText"
 							@click="onSubmit"
 							>제출하기
 						</n-button>
@@ -48,16 +50,20 @@
 </template>
 <script setup>
 import { ref } from 'vue';
-import TheHeader from '../components/layout/TheHeader.vue';
 import { ArchiveOutline } from '@vicons/ionicons5';
+import { useTextStore } from '../store';
+import { useRouter } from 'vue-router';
 /* import { useAxios } from '@/composables/useAxios';
 import { useSocket } from '@/composables/useSocket'; */
 
 /* const { axios } = useAxios();
 const { socket } = useSocket(); */
-const text = ref(''); // input
+const router = useRouter();
+const inputText = ref('');
+const text = useTextStore();
 const onSubmit = () => {
-	emit('submit', text.value);
+	text.setText(inputText.value);
+	router.replace('/result');
 };
 // axios 및 socket 사용 방법 - 주석 처리된 부분 확인
 /* onMounted(() => {
@@ -95,6 +101,6 @@ const sendMessage = () => {
 	height: 60%;
 }
 .n-input {
-	width: 800px;
+	width: 900px;
 }
 </style>

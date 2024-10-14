@@ -1,6 +1,7 @@
 <template>
+	<the-header></the-header>
 	<h2>검색결과</h2>
-	<p>{{ text }}</p>
+	<p>{{ text.text }}</p>
 	<n-space>
 		<n-card v-for="(item, index) in 5" size="small" title="title" class="w-40">
 			<template #header-extra>
@@ -29,9 +30,11 @@
 </template>
 <script setup>
 import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
+import { useTextStore } from '../store';
 const props = defineProps({
 	text: String,
 });
+const text = useTextStore();
 const bookmarked = ref([false, false, false, true, false]);
 
 const toggleBookmark = index => {
