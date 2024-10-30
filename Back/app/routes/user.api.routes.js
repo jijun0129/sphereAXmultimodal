@@ -12,7 +12,7 @@ module.exports = function (app, UserApiRoutes) {
   app.route('/signup').post(userController.signup);
   app.route('/signup').post(validateSignup, userController.signup);
   app.route('/login').post(userController.login);
-  app.route('/logout').get(userController.logout);
+  app.route('/logout').post(userController.logout);
 
 
 };

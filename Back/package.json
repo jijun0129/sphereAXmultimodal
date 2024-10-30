@@ -41,7 +41,7 @@
     "request": "^2.88.2",
     "rtsp-streaming-server": "^2.0.6",
     "semver": "^5.7.1",
-    "sharp": "^0.27.0",
+    "sharp": "^0.27.2",
     "socket.io": "^3.1.2",
     "socket.io-client": "^3.0.5",
     "socketio": "^1.0.0",
