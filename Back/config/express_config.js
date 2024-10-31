@@ -9,8 +9,8 @@ const express = require('express')
   , http = require('http')
   , socketio = require('socket.io')
   , session = require('express-session')
-  , cors = require('cors');
-
+  , cors = require('cors')
+  , path = require('path');
 const corsOptions = {
   origin: 'http://localhost:10111', // 클라이언트 주소로 변경
   credentials: true,
@@ -31,7 +31,7 @@ module.exports = function () {
     })
     , UserApiRoutes = express.Router();
 
-
+  app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
   app.use(cors(corsOptions));
   app.options('*', cors(corsOptions));
   app.use(compress());
