@@ -4,36 +4,31 @@ const express = require('express')
   , compress = require('compression')
   , bodyParser = require('body-parser')
   , methodOverride = require('method-override')
-  , passport = require('passport')
-  , APIroutesConfig = require('./routes_config')
-  , http = require('http')
-  , socketio = require('socket.io')
-  , session = require('express-session')
   , cors = require('cors')
   , path = require('path');
+
 const corsOptions = {
-  origin: 'http://localhost:10111', // 클라이언트 주소로 변경
-  credentials: true,
+  origin: 'http://localhost:10111',
+  credentials: false, // 쿠키가 필요 없으므로 false로 설정
   optionsSuccessStatus: 200
 };
 
 module.exports = function () {
-  var app = express()
-    , server = http.createServer(app)
-    , io = socketio(server, {
-      'destroy buffer size': Infinity,
-      pingTimeout: 600000,
-      pingInterval: 300000,
-      upgradeTimeout: 30000,
-      cors: {
-        origin: '*',  //소켓 통신 크로스도메인 허용
-      }
-    })
-    , UserApiRoutes = express.Router();
+  const app = express();
+  const server = require('http').createServer(app);
+  const io = require('socket.io')(server, {
+    'destroy buffer size': Infinity,
+    pingTimeout: 600000,
+    pingInterval: 300000,
+    upgradeTimeout: 30000,
+    cors: {
+      origin: '*',
+    }
+  });
 
+  // 기본 미들웨어 설정
   app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
   app.use(cors(corsOptions));
-  app.options('*', cors(corsOptions));
   app.use(compress());
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: false }));
   app.use(bodyParser.json({ limit: "50mb" }));
@@ -43,20 +38,20 @@ module.exports = function () {
     tempFileDir: 'tmp/',
     createParentPath: true
   }));
-  app.use(passport.initialize());
-  app.use(express.static('./public'));
 
-
+  // 에러 처리 미들웨어
   app.use((err, req, res, next) => {
     console.error('Unhandled error:', err);
     res.status(500).json({ message: "Internal server error" });
   });
 
+  // 로깅 미들웨어
   app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
   });
 
+  // 타임아웃 설정
   app.use((req, res, next) => {
     res.setTimeout(60000, function () {
       console.log('Request has timed out.');
@@ -65,23 +60,10 @@ module.exports = function () {
     next();
   });
 
-  // Passport 세션 미들웨어 추가
-  app.use(session({
-    secret: 'your_session_secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false }
-  }));
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-
-
-  UserApiRoutes.use(APIroutesConfig.userapi);
+  // API 라우트 설정
+  const UserApiRoutes = express.Router();
   require('../app/routes/user.api.routes')(app, UserApiRoutes);
   require('./socketio')(io);
 
   return server;
-
-}
+};

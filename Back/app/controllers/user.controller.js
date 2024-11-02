@@ -1,143 +1,76 @@
-require('../models/UserLogs')
-
-
 const mongoose = require('mongoose');
-const passport = require('passport');
 const UserInfo = mongoose.model('UserInfo');
 const UserLogs = mongoose.model('UserLogs');
+const { generateToken } = require('../middlewares/auth.middleware');
+const { invalidateToken } = require('../middlewares/auth.middleware');
 
-
-const express = require('express');
-const session = require('express-session');
-
-exports.login = async (req, res, next) => {
+exports.login = async (req, res) => {
   try {
-    const authenticate = () =>
-      new Promise((resolve, reject) => {
-        passport.authenticate('local', (err, user, info) => {
-          if (err) reject(err);
-          if (!user) resolve({ success: false, message: info.message });
-          resolve({ success: true, user });
-        })(req, res, next);
-      });
+    const { ID, PASSWORD } = req.body;
 
-    const authResult = await authenticate();
+    // 사용자 찾기
+    const user = await UserInfo.findOne({ ID });
 
-    if (!authResult.success) {
-      return res.status(401).json({ message: authResult.message });
-    }
-
-    const user = authResult.user;
-
-    // 새 세션 생성
-    req.session.regenerate(async (err) => {
-      if (err) {
-        console.error('Session regeneration error:', err);
-        return res.status(500).json({ message: "Error creating new session" });
-      }
-
-      await new Promise((resolve, reject) => {
-        req.logIn(user, (err) => {
-          if (err) reject(err);
-          resolve();
-        });
-      });
-
-      // 세션에 사용자 정보 저장
-      req.session.userId = user._id;
-
-      // 사용자 로그 생성
+    if (!user || !user.authenticate(PASSWORD)) {
+      // 로그인 실패 로그
       const userLog = new UserLogs({
-        event: '사용자 로그인',
+        event: '사용자 접속(로그인 실패)',
         IPAddress: getUserIP(req),
-        ID: user.ID
+        ID: ID
       });
       await userLog.save();
 
-      res.status(200).json({
-        message: "Login successful",
-        user: { id: user._id, ID: user.ID },
-        sessionId: req.sessionID
+      return res.status(401).json({
+        message: 'Invalid credentials',
+        details: 'ID or password is incorrect'
       });
+    }
+
+    // 로그인 성공 로그
+    const userLog = new UserLogs({
+      event: '사용자 접속(로그인 성공)',
+      IPAddress: getUserIP(req),
+      ID: user.ID
+    });
+    await userLog.save();
+
+    // JWT 토큰 생성
+    const token = generateToken(user);
+
+    // 응답
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        ID: user.ID
+      }
     });
 
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ message: "Error during login" });
-  }
-};
-
-exports.logout = (req, res) => {
-  console.log('Logout attempt started');
-  console.log('Session:', req.session);
-  console.log('Is authenticated:', req.isAuthenticated());
-  console.log('User:', req.user);
-
-  if (!req.isAuthenticated()) {
-    console.log('No active session or user not authenticated');
-    return res.status(400).json({ message: "No active session or user not authenticated" });
-  }
-
-  const userId = req.user ? req.user.ID : 'Unknown';
-  console.log('Logout attempt for user:', userId);
-
-  try {
-    req.logout();
-    console.log('Logout function called successfully');
-
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Session destruction error:', err);
-        return res.status(500).json({ message: "Error destroying session" });
-      }
-
-      console.log('Session destroyed successfully');
-      res.clearCookie('connect.sid');
-
-      // 로그아웃 로그 생성
-      const userLog = new UserLogs({
-        event: '사용자 로그아웃',
-        IPAddress: getUserIP(req),
-        ID: userId
-      });
-
-      userLog.save()
-        .then(() => {
-          console.log('Logout log saved successfully');
-          console.log('Sending successful logout response');
-          res.status(200).json({ message: "Logout successful" });
-        })
-        .catch(err => {
-          console.error('Error saving logout log:', err);
-          res.status(500).json({ message: "Logout successful but failed to save log" });
-        });
+    res.status(500).json({
+      message: "Error during login",
+      error: error.message
     });
-  } catch (error) {
-    console.error('Error during logout:', error);
-    res.status(500).json({ message: "Error during logout" });
   }
 };
 
 exports.signup = async (req, res) => {
-  const { ID, PASSWORD } = req.body;
-
   try {
-    // Check if user already exists
+    const { ID, PASSWORD } = req.body;
+
+    // 사용자 존재 여부 확인
     const existingUser = await UserInfo.findOne({ ID });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user
-    const newUser = new UserInfo({
-      ID,
-      PASSWORD
-    });
-
-    // Save user to database
+    // 새 사용자 생성
+    const newUser = new UserInfo({ ID, PASSWORD });
     await newUser.save();
 
-    // Create user log
+    // 회원가입 로그
     const userLog = new UserLogs({
       event: '사용자 회원가입',
       IPAddress: getUserIP(req),
@@ -145,13 +78,22 @@ exports.signup = async (req, res) => {
     });
     await userLog.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        ID: newUser.ID
+      }
+    });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).json({ message: "Error creating user" });
+    res.status(500).json({
+      message: "Error creating user",
+      error: error.message
+    });
   }
 };
 
+// IP 주소 가져오기 유틸리티 함수
 const getUserIP = (req) => {
   const forwardedIps = req.headers['x-forwarded-for'];
   if (forwardedIps) {
@@ -160,24 +102,28 @@ const getUserIP = (req) => {
   return req.connection.remoteAddress.split(':')[3];
 };
 
-const saveUserLog = async (id) => {
+exports.logout = async (req, res) => {
   try {
-    const userLog = new UserLogs({ ID: id });
+    const token = req.headers['authorization']?.split(' ')[1];
+
+    // 토큰을 블랙리스트에 추가
+    if (token) {
+      invalidateToken(token);
+    }
+
+    // 로그아웃 로그 생성
+    const userLog = new UserLogs({
+      event: '사용자 로그아웃',
+      IPAddress: getUserIP(req),
+      ID: req.user.ID
+    });
     await userLog.save();
-    console.log('Success');
-  } catch (err) {
-    console.error('Error saving user log:', err);
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error('Error during logout:', error);
+    res.status(500).json({ message: "Error during logout" });
   }
 };
 
-exports.userLogs = (req, res) => {
-  const result = req.body.test;
-  res.status(200).send(result);
-};
 
-exports.userInfo = (req, res) => {
-  res.status(200).send('wkit get Method');
-};
-
-// Example usage:
-saveUserLog('테스터');

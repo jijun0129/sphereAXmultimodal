@@ -10,6 +10,7 @@ module.exports = function () {
     require('../app/models/UserInfo.js');
     require('../app/models/UserLogs.js');
     require('../app/models/SearchHistory.js');
+    require('../app/models/Bookmark.js')
 
     mongoose.connection.on('error', err => {
         console.error('MongoDB connection error:', err);
