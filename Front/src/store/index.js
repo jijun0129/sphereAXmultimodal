@@ -44,4 +44,8 @@ export const useImagesStore = defineStore('Images', () => {
 	return { images };
 });
 
+export const useUsersStore = defineStore('Users', () => {
+	const users = ref([{ id: 'asd123', password: 'asd123' }]);
+});
+
 export default pinia;
