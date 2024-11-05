@@ -19,4 +19,17 @@ export const useBookmarkStore = defineStore('bookmark', () => {
 	return { bookmark, toggleBookmark };
 });
 
+export const useLogsStore = defineStore('logs', () => {
+	const logs = ref([
+		{ text: '123', date: '2024/09/26' },
+		{ text: '456', date: '2024/10/14' },
+		{
+			text: '1234567654321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz',
+			date: '2024/11/05',
+		},
+	]);
+
+	return { logs };
+});
+
 export default pinia;
