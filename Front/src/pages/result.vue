@@ -8,32 +8,17 @@
 				v-for="(item, index) in 5"
 				class="h-48 w-full flex justify-center items-center mt-10"
 			>
-				<img src="../assets/dummy/1.jpg" />
-				<n-button
-					type="primary"
-					quaternary
-					circle
-					@click="bookmark.toggleBookmark(index)"
-				>
-					<template #icon>
-						<n-icon>
-							<BookmarkOutline v-if="!bookmark.bookmark[index]" />
-							<BookmarkSharp v-else />
-						</n-icon>
-					</template>
-				</n-button>
+				<image-data></image-data>
 			</div>
 		</n-space>
 	</div>
 </template>
 <script setup>
-import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
-import { useBookmarkStore, useTextStore } from '../store';
-
+import { useTextStore } from '../store';
+import ImageData from '../components/component/ImageData.vue';
 const props = defineProps({
 	text: String,
 });
 const text = useTextStore();
-const bookmark = useBookmarkStore();
 </script>
 <style scoped></style>
