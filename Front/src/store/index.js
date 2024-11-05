@@ -32,4 +32,16 @@ export const useLogsStore = defineStore('logs', () => {
 	return { logs };
 });
 
+export const useImagesStore = defineStore('Images', () => {
+	const images = ref([
+		{ src: 'assets/dummy/1.jpg', bookmark: true },
+		{ src: 'assets/dummy/1.jpg', bookmark: true },
+		{ src: 'assets/dummy/1.jpg', bookmark: true },
+		{ src: 'assets/dummy/1.jpg', bookmark: true },
+		{ src: 'assets/dummy/1.jpg', bookmark: true },
+	]);
+
+	return { images };
+});
+
 export default pinia;

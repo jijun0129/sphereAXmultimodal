@@ -5,35 +5,21 @@
 		<p class="text-base mt-5 text-center">{{ text.text }}</p>
 		<n-space justify="space-between">
 			<div
-				v-for="(item, index) in 5"
+				v-for="image in images.images"
 				class="h-48 w-full flex justify-center items-center mt-10"
 			>
-				<img src="../assets/dummy/1.jpg" />
-				<n-button
-					type="primary"
-					quaternary
-					circle
-					@click="bookmark.toggleBookmark(index)"
-				>
-					<template #icon>
-						<n-icon>
-							<BookmarkOutline v-if="!bookmark.bookmark[index]" />
-							<BookmarkSharp v-else />
-						</n-icon>
-					</template>
-				</n-button>
+				<image-data :src="image.src" :bookmark="image.bookmark"></image-data>
 			</div>
 		</n-space>
 	</div>
 </template>
 <script setup>
-import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
-import { useBookmarkStore, useTextStore } from '../store';
-
+import ImageData from '../components/component/ImageData.vue';
+import { useImagesStore, useTextStore } from '../store';
 const props = defineProps({
 	text: String,
 });
 const text = useTextStore();
-const bookmark = useBookmarkStore();
+const images = useImagesStore();
 </script>
 <style scoped></style>
