@@ -11,8 +11,8 @@
 				class="mt-20 mx-auto"
 				style="width: 85%"
 			>
-				<n-upload-dragger style="height: 250px">
-					<div class="mb-6 mt-5">
+				<n-upload-dragger style="height: 200px">
+					<div class="mb-5 mt-3">
 						<n-icon size="48" :depth="3">
 							<ArchiveOutline />
 						</n-icon>
@@ -20,7 +20,7 @@
 					<n-text class="text-base">
 						파일을 업로드하려면 이 영역을 클릭하거나 파일을 끌어다 놓으세요.
 					</n-text>
-					<n-p depth="3" class="mt-3">
+					<n-p depth="3" class="mt-2">
 						이미지 파일을 한 장 업로드 해주세요
 					</n-p>
 				</n-upload-dragger>
@@ -101,6 +101,6 @@ const sendMessage = () => {
 	height: 60%;
 }
 .n-input {
-	width: 900px;
+	width: 750px;
 }
 </style>
