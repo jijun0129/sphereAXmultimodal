@@ -9,4 +9,9 @@ const props = defineProps({
 	text: String,
 	date: String,
 });
+const emit = defineEmits(['date', 'text']);
+
+const handleClick = () => {
+	emptyImage('log-click');
+};
 </script>

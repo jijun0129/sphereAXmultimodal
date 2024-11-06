@@ -9,16 +9,32 @@
 		></log-data>
 		<log-data
 			v-for="log in logs.logs"
+			:key="log.id"
 			:date="log.date"
 			:text="log.text"
-			class="text-base mt-3 pb-3 log-data"
-		></log-data>
+			@click="onLogClick(log)"
+			class="text-base pt-3 pb-3 cursor-pointer log-data"
+		>
+		</log-data>
 	</div>
+	<log-modal
+		v-if="showDetailModal"
+		:log="selectedLog"
+		@close="showDetailModal = false"
+	></log-modal>
 </template>
 <script setup>
 import LogData from '../components/component/LogData.vue';
+import LogModal from '../components/component/LogModal.vue';
 import { useLogsStore } from '../store';
 const logs = useLogsStore();
+const showDetailModal = ref(false);
+const selectedLog = ref(null);
+
+const onLogClick = log => {
+	selectedLog.value = log;
+	showDetailModal.value = true;
+};
 </script>
 <style scoped>
 .log-data {
