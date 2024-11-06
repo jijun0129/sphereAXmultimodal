@@ -1,11 +1,10 @@
-<script setup></script>
 <template>
 	<the-header :isLoggedIn="false"></the-header>
 	<div class="h-screen flex justify-center mt-40">
 		<n-card>
-			<div class="flex flex-col items-center justify-between">
+			<div class="flex flex-col items-center justify-center">
 				<div class="text-center m-5 text-xl">
-					<h2>로그인</h2>
+					<h2>회원가입</h2>
 				</div>
 				<div class="mb-20 mx-auto content-center" style="width: 70%">
 					<n-space>
@@ -21,16 +20,24 @@
 								placeholder="password"
 							/>
 						</div>
+						<div class="flex mt-5">
+							<p>비밀번호 확인</p>
+							<n-input
+								v-model:value="inputPassword"
+								type="text"
+								placeholder="password"
+							/>
+						</div>
 						<div class="mt-5">
 							<n-button type="primary" size="large" round @click="onSubmit"
-								>로그인
+								>회원가입
 							</n-button>
 						</div>
 					</n-space>
 				</div>
 				<div>
-					<div>아이디가 없으신가요?</div>
-					<div><router-link to="/signup">회원가입하기</router-link></div>
+					<div>아이디가 이미 있으신가요?</div>
+					<div><router-link to="/login">로그인하기</router-link></div>
 				</div>
 			</div>
 		</n-card>
@@ -45,8 +52,8 @@ const Users = useUsersStore();
 const inputId = ref('');
 const inputPassword = ref('');
 const onSubmit = () => {
-	Users.isValidUser({ inputId, inputPassword });
-	router.replace('/main');
+	Users.setUser({ inputId, inputPassword });
+	router.replace('/login');
 };
 </script>
 <style scoped>
