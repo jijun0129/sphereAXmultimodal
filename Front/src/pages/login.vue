@@ -3,31 +3,26 @@
 	<the-header :isLoggedIn="false"></the-header>
 	<div class="h-screen flex justify-center mt-40">
 		<n-card>
-			<div class="flex flex-col items-center justify-center">
+			<div class="flex flex-col items-center justify-between">
 				<div class="text-center m-5 text-xl">
 					<h2>로그인</h2>
 				</div>
-				<div class="mb-20 mx-auto content-center" style="width: 80%">
+				<div class="mb-20 mx-auto content-center" style="width: 70%">
 					<n-space>
 						<div class="flex mt-5">
 							<p>아이디</p>
-							<n-input v-model:value="inputText" type="text" placeholder="id" />
+							<n-input v-model:value="inputId" type="text" placeholder="id" />
 						</div>
 						<div class="flex mt-5">
 							<p>비밀번호</p>
 							<n-input
-								v-model:value="inputText"
+								v-model:value="inputPassword"
 								type="text"
 								placeholder="password"
 							/>
 						</div>
 						<div class="mt-5">
-							<n-button
-								type="primary"
-								size="large"
-								round
-								:disabled="!inputText"
-								@click="onSubmit"
+							<n-button type="primary" size="large" round @click="onSubmit"
 								>로그인
 							</n-button>
 						</div>
@@ -35,15 +30,24 @@
 				</div>
 				<div>
 					<div>아이디가 없으신가요?</div>
-					<div><router-link to="/">회원가입하기</router-link></div>
+					<div><router-link to="/signup">회원가입하기</router-link></div>
 				</div>
 			</div>
 		</n-card>
 	</div>
 </template>
 <script setup>
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUsersStore } from '../store';
 const router = useRouter();
+const Users = useUsersStore();
+const inputId = ref('');
+const inputPassword = ref('');
+const onSubmit = () => {
+	Users.isValidUser({ inputId, inputPassword });
+	router.replace('/main');
+};
 </script>
 <style scoped>
 .center {
