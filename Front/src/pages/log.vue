@@ -18,9 +18,9 @@
 		</log-data>
 	</div>
 	<log-modal
-		v-if="showDetailModal"
+		v-if="showLogModal"
 		:log="selectedLog"
-		@close="showDetailModal = false"
+		@close="showLogModal = false"
 	></log-modal>
 </template>
 <script setup>
@@ -28,12 +28,12 @@ import LogData from '../components/component/LogData.vue';
 import LogModal from '../components/component/LogModal.vue';
 import { useLogsStore } from '../store';
 const logs = useLogsStore();
-const showDetailModal = ref(false);
+const showLogModal = ref(false);
 const selectedLog = ref(null);
 
 const onLogClick = log => {
 	selectedLog.value = log;
-	showDetailModal.value = true;
+	showLogModal.value = true;
 };
 </script>
 <style scoped>

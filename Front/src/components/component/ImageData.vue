@@ -1,13 +1,15 @@
 <template>
-	<img src="../../assets/dummy/1.jpg" />
-	<n-button type="primary" quaternary circle>
-		<template #icon>
-			<n-icon>
-				<BookmarkOutline v-if="!props.bookmark" />
-				<BookmarkSharp v-else />
-			</n-icon>
-		</template>
-	</n-button>
+	<div class="flex mx-auto" style="width: 80%">
+		<img src="../../assets/dummy/1.jpg" />
+		<n-button type="primary" quaternary circle>
+			<template #icon>
+				<n-icon>
+					<BookmarkOutline v-if="!props.bookmark" />
+					<BookmarkSharp v-else />
+				</n-icon>
+			</template>
+		</n-button>
+	</div>
 </template>
 <script setup>
 import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
