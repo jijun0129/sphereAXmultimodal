@@ -3,12 +3,23 @@
 		<div class="modal-content">
 			<button @click="close" class="close-button">×</button>
 			<div>{{ log.date }}</div>
+			<image-data
+				:src="log.inputImage.src"
+				:bookmark="log.inputImage.bookmark"
+			></image-data>
 			<div>{{ log.text }}</div>
+			<image-data
+				v-for="image in log.images"
+				:src="image.src"
+				:bookmark="image.bookmark"
+			></image-data>
 		</div>
 	</div>
 </template>
 
 <script setup>
+import ImageData from './ImageData.vue';
+
 const emit = defineEmits(['close']);
 const props = defineProps(['log']);
 const close = () => {

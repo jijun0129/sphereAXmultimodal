@@ -21,12 +21,38 @@ export const useBookmarkStore = defineStore('bookmark', () => {
 
 export const useLogsStore = defineStore('logs', () => {
 	const logs = ref([
-		{ id: 1, text: '123', date: '2024/09/26' },
-		{ id: 2, text: '456', date: '2024/10/14' },
+		{
+			id: 1,
+			text: '123',
+			date: '2024/09/26',
+			inputImage: { src: 'assets/dummy/1.jpg', bookmark: true },
+			images: [
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+			],
+		},
+		{
+			id: 2,
+			text: '456',
+			date: '2024/10/14',
+			inputImage: { src: 'assets/dummy/1.jpg', bookmark: true },
+			images: [
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+			],
+		},
 		{
 			id: 3,
 			text: '1234567654321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz',
 			date: '2024/11/05',
+			inputImage: { src: 'assets/dummy/1.jpg', bookmark: true },
+			images: [
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/1.jpg', bookmark: true },
+			],
 		},
 	]);
 
