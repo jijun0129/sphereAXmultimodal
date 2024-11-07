@@ -2,11 +2,11 @@
 	<the-header></the-header>
 	<div class="h-screen justify-center mt-10 mx-auto" style="width: 80%">
 		<h2 class="text-2xl font-bold">검색결과</h2>
-		<n-card class="mt-5 w-4/5 mx-auto">
+		<n-card class="mt-5 w-5/6 mx-auto">
 			<p class="text-base m-3 text-center">입력 텍스트: {{ text.text }}</p>
 		</n-card>
 		<div
-			class="w-4/5 grid gap-10 grid-cols-4 justify-center items-center mt-10 mx-auto"
+			class="w-11/12 grid gap-10 grid-cols-4 justify-center items-center mt-10 mx-auto"
 		>
 			<image-data
 				v-for="image in images.images"
@@ -29,6 +29,6 @@ const images = useImagesStore();
 <style scoped>
 .n-card {
 	border-radius: 25px;
-	border: 2px solid #121212;
+	border: 3px solid #121212;
 }
 </style>

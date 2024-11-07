@@ -47,11 +47,10 @@ export const useLogsStore = defineStore('logs', () => {
 			id: 3,
 			text: '1234567654321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz',
 			date: '2024/11/05',
-			inputImage: { src: 'assets/dummy/1.jpg', bookmark: true },
+			inputImage: { src: 'assets/dummy/2.jpg', bookmark: true },
 			images: [
-				{ src: 'assets/dummy/1.jpg', bookmark: true },
-				{ src: 'assets/dummy/1.jpg', bookmark: true },
-				{ src: 'assets/dummy/1.jpg', bookmark: true },
+				{ src: 'assets/dummy/2.jpg', bookmark: true },
+				{ src: 'assets/dummy/2.jpg', bookmark: true },
 			],
 		},
 	]);
@@ -62,10 +61,15 @@ export const useLogsStore = defineStore('logs', () => {
 export const useImagesStore = defineStore('Images', () => {
 	const images = ref([
 		{ id: 1, src: 'assets/dummy/1.jpg', bookmark: true, inputText: '123' },
-		{ id: 2, src: 'assets/dummy/1.jpg', bookmark: true, inputText: '123' },
+		{ id: 2, src: 'assets/dummy/1.jpg', bookmark: false, inputText: '123' },
 		{ id: 3, src: 'assets/dummy/1.jpg', bookmark: true, inputText: '123' },
 		{ id: 4, src: 'assets/dummy/1.jpg', bookmark: true, inputText: '123' },
-		{ id: 5, src: 'assets/dummy/1.jpg', bookmark: true, inputText: '123' },
+		{
+			id: 5,
+			src: 'assets/dummy/2.jpg',
+			bookmark: true,
+			inputText: '1234567654321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz',
+		},
 	]);
 
 	return { images };

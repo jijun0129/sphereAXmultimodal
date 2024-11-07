@@ -1,9 +1,9 @@
 <template>
 	<the-header></the-header>
 	<div class="h-screen justify-center m-10 mx-auto" style="width: 80%">
-		<h2 class="text-2xl font-bold">검색결과</h2>
+		<h2 class="text-2xl font-bold">북마크 목록</h2>
 		<div
-			class="w-full grid gap-10 grid-cols-5 justify-center items-center mt-10 mx-auto"
+			class="w-full grid gap-10 grid-cols-6 justify-center items-center mt-10 mx-auto"
 		>
 			<image-data
 				v-for="image in images.images"
