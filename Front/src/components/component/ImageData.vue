@@ -1,7 +1,7 @@
 <template>
-	<div class="flex mx-auto" style="width: 80%">
-		<img src="../../assets/dummy/1.jpg" />
-		<n-button type="primary" quaternary circle>
+	<div class="flex mx-auto relative" style="width: 80%">
+		<img src="../../assets/dummy/1.jpg" class="w-full" />
+		<n-button type="primary" quaternary circle class="absolute top-2 right-2">
 			<template #icon>
 				<n-icon>
 					<BookmarkOutline v-if="!props.bookmark" />

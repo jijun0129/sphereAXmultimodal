@@ -1,6 +1,6 @@
 <template>
 	<the-header></the-header>
-	<div class="h-screen flex justify-center mt-40">
+	<div class="h-screen flex justify-center mt-36">
 		<n-card
 			content-style="display: flex; flex-direction: column; justify-content: space-between;"
 		>

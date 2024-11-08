@@ -1,75 +1,149 @@
 <template>
 	<the-header :isLoggedIn="false"></the-header>
-	<div class="h-screen flex justify-center mt-40">
-		<n-card>
-			<div class="flex flex-col items-center justify-center">
-				<div class="text-center m-5 text-xl">
-					<h2>회원가입</h2>
-				</div>
-				<div class="mb-20 mx-auto content-center" style="width: 70%">
-					<n-space>
-						<div class="flex mt-5">
-							<p>아이디</p>
-							<n-input v-model:value="inputId" type="text" placeholder="id" />
-						</div>
-						<div class="flex mt-5">
-							<p>비밀번호</p>
-							<n-input
-								v-model:value="inputPassword"
-								type="text"
-								placeholder="password"
-							/>
-						</div>
-						<div class="flex mt-5">
-							<p>비밀번호 확인</p>
-							<n-input
-								v-model:value="inputPassword"
-								type="text"
-								placeholder="password"
-							/>
-						</div>
-						<div class="mt-5">
-							<n-button type="primary" size="large" round @click="onSubmit"
-								>회원가입
-							</n-button>
-						</div>
-					</n-space>
-				</div>
-				<div>
-					<div>아이디가 이미 있으신가요?</div>
-					<div><router-link to="/login">로그인하기</router-link></div>
-				</div>
+	<n-card class="mx-auto w-5/12 mt-36">
+		<div class="w-auto flex flex-col items-center justify-center">
+			<div class="text-center m-5 text-xl">
+				<h2>회원가입</h2>
 			</div>
-		</n-card>
-	</div>
+			<div class="mt-5 mx-auto content-center w-2/3">
+				<n-form ref="formRef" :model="model" :rules="rules">
+					<n-form-item path="id" label="아이디" class="mb-3">
+						<n-input v-model:value="model.id" @keydown.enter.prevent />
+					</n-form-item>
+					<n-form-item path="password" label="비밀번호" class="mb-3">
+						<n-input
+							v-model:value="model.password"
+							type="password"
+							@input="handlePasswordInput"
+							@keydown.enter.prevent
+						/>
+					</n-form-item>
+					<n-form-item
+						ref="rPasswordFormItemRef"
+						first
+						path="reenteredPassword"
+						label="비밀번호 확인"
+						class="mb-3"
+					>
+						<n-input
+							v-model:value="model.reenteredPassword"
+							type="password"
+							@keydown.enter.prevent
+						/>
+					</n-form-item>
+					<n-row :gutter="[0, 24]">
+						<n-col :span="24">
+							<div style="display: flex; justify-content: flex-end">
+								<n-button
+									round
+									type="primary"
+									@click="handleValidateButtonClick"
+								>
+									회원가입
+								</n-button>
+							</div>
+						</n-col>
+					</n-row>
+				</n-form>
+			</div>
+			<div class="flex justify-between items-center w-7/12 mt-16 mb-3">
+				<div>아이디가 이미 있으신가요?</div>
+				<div><router-link to="/login">로그인하기</router-link></div>
+			</div>
+		</div>
+	</n-card>
 </template>
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUsersStore } from '../store';
-const router = useRouter();
-const Users = useUsersStore();
-const inputId = ref('');
-const inputPassword = ref('');
-const onSubmit = () => {
-	Users.setUser({ inputId, inputPassword });
-	router.replace('/login');
-};
+
+<script>
+import { defineComponent, ref } from 'vue';
+import { useMessage } from 'naive-ui';
+import router from '../router';
+
+export default defineComponent({
+	setup() {
+		const formRef = ref(null);
+		const rPasswordFormItemRef = ref(null);
+		const message = useMessage();
+		const modelRef = ref({
+			id: null,
+			password: null,
+			reenteredPassword: null,
+		});
+		function validatePasswordStartWith(rule, value) {
+			return (
+				!!modelRef.value.password &&
+				modelRef.value.password.startsWith(value) &&
+				modelRef.value.password.length >= value.length
+			);
+		}
+		function validatePasswordSame(rule, value) {
+			return value === modelRef.value.password;
+		}
+		const rules = {
+			id: [
+				{
+					required: true,
+					validator(rule, value) {
+						if (!value) {
+							return new Error('Age is required');
+						}
+						return true;
+					},
+					trigger: ['input', 'blur'],
+				},
+			],
+			password: [
+				{
+					required: true,
+					message: 'Password is required',
+				},
+			],
+			reenteredPassword: [
+				{
+					required: true,
+					message: 'Re-entered password is required',
+					trigger: ['input', 'blur'],
+				},
+				{
+					validator: validatePasswordStartWith,
+					message: 'Password is not same as re-entered password!',
+					trigger: 'input',
+				},
+				{
+					validator: validatePasswordSame,
+					message: 'Password is not same as re-entered password!',
+					trigger: ['blur', 'password-input'],
+				},
+			],
+		};
+		return {
+			formRef,
+			rPasswordFormItemRef,
+			model: modelRef,
+			rules,
+			handlePasswordInput() {
+				if (modelRef.value.reenteredPassword) {
+					rPasswordFormItemRef.value?.validate({ trigger: 'password-input' });
+				}
+			},
+			handleValidateButtonClick(e) {
+				e.preventDefault();
+				formRef.value?.validate(errors => {
+					if (!errors) {
+						message.success('Valid');
+						router.replace('/login');
+					} else {
+						console.log(errors);
+						message.error('Invalid');
+					}
+				});
+			},
+		};
+	},
+});
 </script>
 <style scoped>
-.center {
-	display: flex;
-	flex-direction: column;
-	align-items: center; /* 수평 중앙 정렬 */
-	justify-content: center; /* 수직 중앙 정렬 */
-	height: 90vh;
-}
 .n-card {
 	border-radius: 25px;
-	width: 60%;
-	height: 60%;
-}
-.n-input {
-	width: 750px;
 }
 </style>
