@@ -1,5 +1,12 @@
-import axiosInstance from '@/plugins/axios';
+import axios from 'axios';
 
-export function useAxios() {
-	return { axios: axiosInstance };
-}
+export default () => {
+	const setBaseURL = url => {
+		axios.defaults.baseURL = url;
+	};
+
+	return {
+		axios,
+		setBaseURL,
+	};
+};
