@@ -1,6 +1,9 @@
 <template>
 	<the-header></the-header>
-	<div class="h-screen justify-center m-10 mx-auto" style="width: 80%">
+	<div
+		class="flex flex-col h-screen justify-center m-10 mx-auto"
+		style="width: 80%"
+	>
 		<h2 class="text-2xl font-bold">검색기록</h2>
 		<log-data
 			date="날짜"
@@ -16,7 +19,11 @@
 			class="text-base pt-3 pb-3 cursor-pointer log-data"
 		>
 		</log-data>
+		<div class="flex justify-center mt-auto mb-40 text-lg">
+			<button>1</button>
+		</div>
 	</div>
+
 	<the-footer></the-footer>
 	<log-modal
 		v-if="showLogModal"
