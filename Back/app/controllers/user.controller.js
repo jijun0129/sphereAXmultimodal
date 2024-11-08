@@ -93,15 +93,6 @@ exports.signup = async (req, res) => {
   }
 };
 
-// IP 주소 가져오기 유틸리티 함수
-const getUserIP = (req) => {
-  const forwardedIps = req.headers['x-forwarded-for'];
-  if (forwardedIps) {
-    return forwardedIps.split(',')[0].split(':')[3];
-  }
-  return req.connection.remoteAddress.split(':')[3];
-};
-
 exports.logout = async (req, res) => {
   try {
     const token = req.headers['authorization']?.split(' ')[1];
@@ -124,6 +115,16 @@ exports.logout = async (req, res) => {
     console.error('Error during logout:', error);
     res.status(500).json({ message: "Error during logout" });
   }
+};
+
+
+// IP 주소 가져오기 유틸리티 함수
+const getUserIP = (req) => {
+  const forwardedIps = req.headers['x-forwarded-for'];
+  if (forwardedIps) {
+    return forwardedIps.split(',')[0].split(':')[3];
+  }
+  return req.connection.remoteAddress.split(':')[3];
 };
 
 

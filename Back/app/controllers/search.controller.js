@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs').promises;
-const SearchHistory = require('../models/SearchHistory');
+const SearchHistory = mongoose.model('SearchHistory');
+
 
 exports.search = async (req, res) => {
     try {
@@ -31,7 +32,7 @@ exports.search = async (req, res) => {
 
         await image.mv(originalFilePath);
 
-        // 4. [Todo] AI 가 들어갈 부분
+        // 4. AI 가 들어갈 부분
 
         // 현재는 임시 결과 반환
         const resultsDir = path.join(__dirname, '../../uploads/results');

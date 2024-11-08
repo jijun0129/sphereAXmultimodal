@@ -3,6 +3,7 @@ const { validateSignup } = require('../middlewares/validators');
 const searchController = require('../controllers/search.controller');
 const { verifyToken } = require('../middlewares/auth.middleware');
 const bookmarkController = require('../controllers/bookmark.controller')
+const searchHistoryController = require('../controllers/searchHistory.controller');
 module.exports = function (app) {
   // 회원 관리 라우트
   app.post('/signup', validateSignup, userController.signup);
@@ -18,4 +19,18 @@ module.exports = function (app) {
   app.get('/bookmarks', verifyToken, bookmarkController.getBookmarks);
   app.get('/bookmarks/:id', verifyToken, bookmarkController.getBookmark);
 
+
+  // 검색 기록 라우트
+  app.get('/history',
+    verifyToken,
+    searchHistoryController.getSearchHistory
+  );
+  app.get('/history/:id',
+    verifyToken,
+    searchHistoryController.getSearchHistoryDetail
+  );
+  // app.delete('/history/:id',
+  //   verifyToken,
+  //   searchHistoryController.deleteSearchHistory
+  // );
 };
