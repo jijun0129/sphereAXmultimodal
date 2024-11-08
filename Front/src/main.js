@@ -10,6 +10,7 @@ import TheFooter from './components/layout/TheFooter.vue';
 // composables
 import useAxios from './composables/useAxios';
 import { useSocketStore } from './store/socket';
+import { io } from 'socket.io-client';
 
 const app = createApp(App);
 
