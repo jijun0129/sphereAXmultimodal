@@ -56,7 +56,7 @@ export const useLogsStore = defineStore('logs', () => {
 		},
 		{
 			id: 4,
-			text: '100자 테스트 321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz123435465742434567234567324567234567231456723456',
+			text: '100자 테스트 12345678910 가나다라마바사아자차카타파하 qwertyasdfghzxcvbn 12345678910 가나다라마바사아자차카타파하 qwertyasdfghzxcvbn',
 			date: '2024/11/08',
 			inputImage: { src: 'assets/dummy/2.jpg', bookmark: true },
 			images: [
@@ -97,7 +97,7 @@ export const useImagesStore = defineStore('Images', () => {
 			src: 'assets/dummy/1.jpg',
 			bookmark: true,
 			inputText:
-				'100자 테스트 321qwertyuytrewqasdfghjkhgfdsazxcvbnmnbvcxz123435465742434567234567324567234567231456723456',
+				'100자 테스트 12345678910 가나다라마바사아자차카타파하 qwertyasdfghzxcvbn 12345678910 가나다라마바사아자차카타파하 qwertyasdfghzxcvbn',
 			date: '2024/11/05',
 		},
 		{
