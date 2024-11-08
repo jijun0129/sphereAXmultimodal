@@ -1,9 +1,16 @@
 <template>
 	<div class="modal-overlay" @click.self="close">
-		<div class="modal-content">
+		<div class="flex flex-col modal-content items-center p-5">
 			<button @click="close" class="close-button">×</button>
-			<image-data :src="image.src" :bookmark="image.bookmark"></image-data>
-			<div>{{ image.inputText }}</div>
+			<div class="text-center mt-5 text-xl">{{ image.date }}</div>
+			<div class="flex justify-between items-center w-full m-10">
+				<div class="w-1/2 flex justify-center">
+					<image-data :src="image.src" :bookmark="image.bookmark"></image-data>
+				</div>
+				<div class="w-1/2 text-center break-words text-lg">
+					{{ image.inputText }}
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -32,11 +39,11 @@ const close = () => {
 }
 
 .modal-content {
-	background: #727272;
+	background: #454545;
 	padding: 20px;
 	border-radius: 8px;
 	width: 80%;
-	max-width: 500px;
+	max-width: 800px;
 	position: relative;
 }
 
