@@ -19,7 +19,7 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
-import ImageData from '../components/component/ImageData.vue';
+import ImageData from '../components/ImageData.vue';
 import { useImagesStore, useTextStore } from '../store';
 const props = defineProps({
 	text: String,
