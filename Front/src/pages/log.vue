@@ -17,6 +17,7 @@
 		>
 		</log-data>
 	</div>
+	<the-footer></the-footer>
 	<log-modal
 		v-if="showLogModal"
 		:log="selectedLog"
