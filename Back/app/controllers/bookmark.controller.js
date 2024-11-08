@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const Bookmark = require('../models/Bookmark');
-const SearchHistory = require('../models/SearchHistory');
+const UserInfo = mongoose.model('UserInfo');
+const Bookmark = mongoose.model('Bookmark');
+const SearchHistory = mongoose.model('SearchHistory');
 
 // 북마크 목록 조회 (페이지네이션)
 exports.getBookmarks = async (req, res) => {
