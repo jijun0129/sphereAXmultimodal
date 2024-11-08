@@ -1,6 +1,6 @@
 <template>
 	<div class="flex mx-auto relative" style="width: 80%">
-		<img src="../../assets/dummy/1.jpg" class="w-full" />
+		<img src="../assets/dummy/1.jpg" class="w-full" />
 		<n-button type="primary" quaternary circle class="absolute top-2 right-2">
 			<template #icon>
 				<n-icon>
@@ -13,7 +13,7 @@
 </template>
 <script setup>
 import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
-import { useBookmarkStore } from '../../store';
+import { useBookmarkStore } from '../store/index';
 const bookmark = useBookmarkStore();
 const props = defineProps({
 	src: String,

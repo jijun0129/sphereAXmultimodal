@@ -22,8 +22,8 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
-import ImageData from '../components/component/ImageData.vue';
-import ImageModal from '../components/component/ImageModal.vue';
+import ImageData from '../components/ImageData.vue';
+import ImageModal from '../components/ImageModal.vue';
 import { useImagesStore } from '../store';
 const images = useImagesStore();
 

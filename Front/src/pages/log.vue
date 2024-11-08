@@ -32,8 +32,8 @@
 	></log-modal>
 </template>
 <script setup>
-import LogData from '../components/component/LogData.vue';
-import LogModal from '../components/component/LogModal.vue';
+import LogData from '../components/LogData.vue';
+import LogModal from '../components/LogModal.vue';
 import { useLogsStore } from '../store';
 const logs = useLogsStore();
 const showLogModal = ref(false);
