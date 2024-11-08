@@ -7,13 +7,13 @@
 					<h2>로그인</h2>
 				</div>
 				<div class="mt-5 mx-auto content-center w-2/3">
-					<n-form ref="formRef" :model="model">
+					<n-form ref="formRef" :model="modelRef">
 						<n-form-item path="id" label="아이디" class="mb-3">
-							<n-input v-model:value="model.id" @keydown.enter.prevent />
+							<n-input v-model:value="modelRef.id" @keydown.enter.prevent />
 						</n-form-item>
 						<n-form-item path="password" label="비밀번호" class="mb-3">
 							<n-input
-								v-model:value="model.password"
+								v-model:value="modelRef.password"
 								type="password"
 								@input="handlePasswordInput"
 								@keydown.enter.prevent
@@ -23,7 +23,7 @@
 							<n-col :span="24">
 								<div style="display: flex; justify-content: flex-end">
 									<n-button
-										:disabled="model.id === null"
+										:disabled="modelRef.id === null"
 										round
 										type="primary"
 										@click="handleValidateButtonClick"
@@ -45,44 +45,35 @@
 	<the-footer></the-footer>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue';
+<script setup>
+import { ref } from 'vue';
 import { useMessage } from 'naive-ui';
-import router from '../router';
+import router from '@/router';
 
-export default defineComponent({
-	setup() {
-		const formRef = ref(null);
-		const rPasswordFormItemRef = ref(null);
-		const message = useMessage();
-		const modelRef = ref({
-			id: null,
-			password: null,
-		});
-		return {
-			formRef,
-			rPasswordFormItemRef,
-			model: modelRef,
-			handlePasswordInput() {
-				if (modelRef.value.reenteredPassword) {
-					rPasswordFormItemRef.value?.validate({ trigger: 'password-input' });
-				}
-			},
-			handleValidateButtonClick(e) {
-				e.preventDefault();
-				formRef.value?.validate(errors => {
-					if (!errors) {
-						message.success('Valid');
-						router.replace('/main');
-					} else {
-						console.log(errors);
-						message.error('Invalid');
-					}
-				});
-			},
-		};
-	},
+const formRef = ref(null);
+const rPasswordFormItemRef = ref(null);
+const message = useMessage();
+const modelRef = ref({
+	id: null,
+	password: null,
 });
+const handlePasswordInput = () => {
+	if (modelRef.value.reenteredPassword) {
+		rPasswordFormItemRef.value?.validate({ trigger: 'password-input' });
+	}
+};
+const handleValidateButtonClick = e => {
+	e.preventDefault();
+	formRef.value?.validate(errors => {
+		if (!errors) {
+			message.success('Valid');
+			router.replace('/main');
+		} else {
+			console.log(errors);
+			message.error('Invalid');
+		}
+	});
+};
 </script>
 <style scoped>
 .n-card {
