@@ -16,6 +16,7 @@
 			></image-data>
 		</div>
 	</div>
+	<the-footer></the-footer>
 </template>
 <script setup>
 import ImageData from '../components/component/ImageData.vue';

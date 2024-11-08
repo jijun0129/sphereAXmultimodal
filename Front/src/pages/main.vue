@@ -47,6 +47,7 @@
 			</div>
 		</n-card>
 	</div>
+	<the-footer></the-footer>
 </template>
 <script setup>
 import { ref } from 'vue';
