@@ -10,7 +10,7 @@ docker run -v ./project:/project node -it -d -p 10111:10111 --name=컨테이너�
 
 sudo docker run --name mongodb -v ~/data:/data/db -d -p 27017:27017 mongo
 
-이 때 -v ~/data:/data/db는 호스트(컨테이너를 구동하는 로컬 컴퓨터)의 ~/data 디렉터리와 컨테이너의 /data/db 디렉터리를 마운트 됩니다.
+이 때 -v ~/data:/data/db는 호스트(컨테이너를 구동하는 로컬 컴퓨터)의 ~/data 디렉터리와 컨테이너의 /data/db 디렉터리를 마운트 됩니다. (이 부분은 빠져도 됨)
 
 
 
