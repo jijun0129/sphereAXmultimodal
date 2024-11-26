@@ -24,11 +24,26 @@
 <script setup>
 import ImageData from '../components/ImageData.vue';
 import ImageModal from '../components/ImageModal.vue';
-import { useImagesStore } from '../store';
+import { useImagesStore } from '../store/images.js';
+import { onMounted } from 'vue';
+import useAxios from '../composables/useAxios.js';
 const images = useImagesStore();
 
 const showImageModal = ref(false);
 const selectedImage = ref(null);
+
+const { axios } = useAxios();
+
+// onMounted(() => {
+// 	axios
+// 		.get(`/history/${id}`)
+// 		.then(response => {
+// 			console.log(response.data);
+// 		})
+// 		.catch(error => {
+// 			console.error(error);
+// 		});
+// });
 
 const onImageClick = image => {
 	selectedImage.value = image;

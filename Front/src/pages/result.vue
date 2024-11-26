@@ -20,7 +20,8 @@
 </template>
 <script setup>
 import ImageData from '../components/ImageData.vue';
-import { useImagesStore, useTextStore } from '../store';
+import { useImagesStore } from '../store/images.js';
+import { useTextStore } from '../store/text.js';
 const props = defineProps({
 	text: String,
 });

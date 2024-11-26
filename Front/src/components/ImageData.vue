@@ -13,8 +13,6 @@
 </template>
 <script setup>
 import { BookmarkOutline, BookmarkSharp } from '@vicons/ionicons5';
-import { useBookmarkStore } from '../store/index';
-const bookmark = useBookmarkStore();
 const props = defineProps({
 	src: String,
 	bookmark: Boolean,

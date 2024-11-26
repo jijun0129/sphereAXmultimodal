@@ -52,7 +52,7 @@
 <script setup>
 import { ref } from 'vue';
 import { ArchiveOutline } from '@vicons/ionicons5';
-import { useTextStore } from '../store/index.js';
+import { useTextStore } from '../store/text.js';
 import { useRouter } from 'vue-router';
 /* import { useAxios } from '@/composables/useAxios';
 import { useSocket } from '@/composables/useSocket'; */

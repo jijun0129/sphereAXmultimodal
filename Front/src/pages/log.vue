@@ -34,7 +34,7 @@
 <script setup>
 import LogData from '../components/LogData.vue';
 import LogModal from '../components/LogModal.vue';
-import { useLogsStore } from '../store';
+import { useLogsStore } from '../store/logs.js';
 const logs = useLogsStore();
 const showLogModal = ref(false);
 const selectedLog = ref(null);
