@@ -1,5 +1,5 @@
 <template>
-	<the-header :isLoggedIn="false"></the-header>
+	<the-header></the-header>
 	<div class="h-screen">
 		<n-card class="mx-auto w-5/12 mt-36">
 			<div class="w-auto flex flex-col items-center justify-center">
@@ -49,21 +49,24 @@
 				</div>
 				<div class="flex justify-between items-center w-7/12 mt-16 mb-3">
 					<div>아이디가 이미 있으신가요?</div>
-					<div><router-link to="/login">로그인하기</router-link></div>
+					<div class="text-blue-300">
+						<router-link to="/login">로그인하기</router-link>
+					</div>
 				</div>
 			</div>
 		</n-card>
 	</div>
 	<the-footer></the-footer>
 </template>
-
 <script>
 import { defineComponent, ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import router from '../router';
+import useAxios from '../composables/useAxios.js';
 
 export default defineComponent({
 	setup() {
+		const axiosInstance = useAxios();
 		const formRef = ref(null);
 		const rPasswordFormItemRef = ref(null);
 		const message = useMessage();
@@ -133,11 +136,40 @@ export default defineComponent({
 				e.preventDefault();
 				formRef.value?.validate(errors => {
 					if (!errors) {
-						message.success('Valid');
-						router.replace('/login');
+						// 가입 요청 데이터
+						const signUpRequest = {
+							ID: modelRef.value.id,
+							PASSWORD: modelRef.value.password,
+							CONFIRM_PASSWORD: modelRef.value.password,
+						};
+						axiosInstance.axios
+							.post(`/signup`, signUpRequest, {
+								headers: {
+									'Content-Type': 'application/json',
+								},
+							})
+							.then(response => {
+								message.success('Valid');
+								console.log('회원가입 성공:', response.data);
+								alert(
+									'회원가입이 성공하였습니다.\n' +
+										'토큰: ' +
+										response.data.token,
+								);
+								router.replace('/login');
+							})
+							.catch(error => {
+								if (error.response) {
+									message.error('회원가입 실패: ', error.response.data);
+								} else if (error.request) {
+									message.error('회원가입 실패: 서버응답이 없습니다. ');
+								} else {
+									message.error('요청 설정 오류: ', error.message);
+								}
+							});
 					} else {
 						console.log(errors);
-						message.error('Invalid');
+						message.error('회원가입 실패: 아이디, 비밀번호를 확인하세요. ');
 					}
 				});
 			},
