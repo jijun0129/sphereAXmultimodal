@@ -10,12 +10,14 @@ import useAxios from './composables/useAxios';
 import { useSocketStore } from './store/socket';
 import { io } from 'socket.io-client';
 import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 
 const app = createApp(App);
 
 app.use(router);
 
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 // reset axios & socket
