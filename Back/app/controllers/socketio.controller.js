@@ -1,19 +1,44 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs').promises;
+const jwt = require('jsonwebtoken');
+const config = require('../../config/node_config');
 const SearchHistory = mongoose.model('SearchHistory');
 
 module.exports = function (io, socket) {
-	// 에러 처리
-	process.on('uncaughtException', (err) => {
-		console.error('uncaughtException: ', err);
-	});
+	console.log('New socket connection, auth status:', socket.auth);
 
-	// 검색 요청 처리
+	// 인증 이벤트 핸들러
+	socket.on('authenticate', (token) => {
+		try {
+			const decoded = jwt.verify(token, config.UsertokenSecret);
+			socket.user = decoded;
+			socket.auth = true;
+			socket.emit('authenticated');
+			console.log('Socket authenticated for user:', decoded);
+
+			// 인증 성공 후 search 이벤트 핸들러 등록
+			registerSearchHandler(socket);
+		} catch (error) {
+			console.error('Authentication error:', error);
+			socket.emit('unauthorized');
+		}
+	});
+};
+
+function registerSearchHandler(socket) {
+	console.log('Registering search handler for socket:', socket.id);
+
 	socket.on('search', async (data) => {
+		console.log('Search request received:', {
+			hasImage: !!data.image,
+			hasText: !!data.text,
+			imageName: data.image?.name
+		});
+
 		try {
 			const { image, text } = data;
-			const userId = socket.user._id;  // 인증된 사용자 ID
+			const userId = socket.user._id;
 
 			// 검색 시작 알림
 			socket.emit('searchStatus', {
@@ -85,9 +110,4 @@ module.exports = function (io, socket) {
 			});
 		}
 	});
-
-	// 연결 해제 처리
-	socket.on('disconnect', () => {
-		console.log('Client disconnected:', socket.id);
-	});
-};
+}

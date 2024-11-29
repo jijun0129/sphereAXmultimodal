@@ -9,15 +9,18 @@ module.exports = function (io) {
         const token = socket.handshake.auth.token;
 
         if (!token) {
-            return next(new Error('Authentication error: Token not provided'));
+            socket.auth = false;
+            return next();
         }
 
         try {
             const decoded = jwt.verify(token, config.UsertokenSecret);
             socket.user = decoded; // 검증된 사용자 정보를 소켓에 저장
+            socket.auth = true;
             next();
         } catch (error) {
-            next(new Error('Authentication error: Invalid token'));
+            socket.auth = false;
+            next()
         }
     });
 
