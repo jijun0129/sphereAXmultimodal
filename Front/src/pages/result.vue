@@ -9,10 +9,10 @@
 			class="w-11/12 grid gap-10 grid-cols-4 justify-center items-center mt-10 mx-auto"
 		>
 			<image-data
-				v-for="image in images.images"
-				:id="image.id"
-				:src="image.src"
-				:bookmark="image.bookmark"
+				v-for="Result in Results.Results"
+				:id="Result.id"
+				:src="Result.src"
+				:bookmark="Result.bookmark"
 			></image-data>
 		</div>
 	</div>
@@ -20,13 +20,13 @@
 </template>
 <script setup>
 import ImageData from '../components/ImageData.vue';
-import { useImagesStore } from '../store/images.js';
+import { useResultsStore } from '../store/results.js';
 import { useTextStore } from '../store/text.js';
 const props = defineProps({
 	text: String,
 });
 const text = useTextStore();
-const images = useImagesStore();
+const Results = useResultsStore();
 </script>
 <style scoped>
 .n-card {
