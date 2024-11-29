@@ -40,5 +40,9 @@ export const useImagesStore = defineStore('Images', () => {
 		},
 	]);
 
-	return { images };
+	const setImages = image => {
+		images.value = image;
+	};
+
+	return { images, setImages };
 });

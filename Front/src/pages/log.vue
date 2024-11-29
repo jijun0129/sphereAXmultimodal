@@ -34,10 +34,38 @@
 <script setup>
 import LogData from '../components/LogData.vue';
 import LogModal from '../components/LogModal.vue';
+import useAxios from '../composables/useAxios.js';
 import { useLogsStore } from '../store/logs.js';
+import { useUserStore } from '../store/user.js';
+
 const logs = useLogsStore();
+const { token } = useUserStore();
 const showLogModal = ref(false);
 const selectedLog = ref(null);
+const { axios } = useAxios();
+const page = 1;
+const limit = 10;
+
+onMounted(() => {
+	axios
+		.get(`/history`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			params: {
+				page,
+				limit,
+			},
+		})
+		.then(response => {
+			logs.setLogs(response.data.history);
+			console.log('History data:', response.data.history);
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+});
 
 const onLogClick = log => {
 	selectedLog.value = log;

@@ -47,5 +47,9 @@ export const useLogsStore = defineStore('logs', () => {
 		},
 	]);
 
-	return { logs };
+	const setLogs = history => {
+		logs.value = history;
+	};
+
+	return { logs, setLogs };
 });

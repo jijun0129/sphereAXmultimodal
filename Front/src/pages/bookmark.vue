@@ -27,23 +27,36 @@ import ImageModal from '../components/ImageModal.vue';
 import { useImagesStore } from '../store/images.js';
 import { onMounted } from 'vue';
 import useAxios from '../composables/useAxios.js';
+import { useUserStore } from '../store/user.js';
 const images = useImagesStore();
-
+const { token } = useUserStore();
 const showImageModal = ref(false);
 const selectedImage = ref(null);
+const page = 1;
+const limit = 18;
 
 const { axios } = useAxios();
 
-// onMounted(() => {
-// 	axios
-// 		.get(`/history/${id}`)
-// 		.then(response => {
-// 			console.log(response.data);
-// 		})
-// 		.catch(error => {
-// 			console.error(error);
-// 		});
-// });
+onMounted(() => {
+	axios
+		.get(`/bookmarks`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			params: {
+				page,
+				limit,
+			},
+		})
+		.then(response => {
+			images.setImages(response.imageUrl);
+			console.log('History data:', response.data);
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+});
 
 const onImageClick = image => {
 	selectedImage.value = image;
