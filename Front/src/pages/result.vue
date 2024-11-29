@@ -19,14 +19,29 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import ImageData from '../components/ImageData.vue';
 import { useResultsStore } from '../store/results.js';
 import { useTextStore } from '../store/text.js';
-const props = defineProps({
-	text: String,
-});
+import { useSocketStore } from '../store/socket.js';
+
 const text = useTextStore();
 const Results = useResultsStore();
+const socket = useSocketStore();
+const messages = ref([]);
+
+onMounted(() => {
+	socket.reconnectSocket();
+	socket.on('searchStatus', data => {
+		console.log('Received message:', data);
+		messages.value.push(data);
+	});
+});
+
+onBeforeUnmount(() => {
+	console.log(messages.value);
+	socket.removeListener('searchStatus');
+});
 </script>
 <style scoped>
 .n-card {

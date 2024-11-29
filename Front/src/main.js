@@ -23,15 +23,13 @@ app.use(pinia);
 // reset axios & socket
 const axiosInstance = useAxios();
 
-axiosInstance.setBaseURL('http://localhost:10111');
-
 // local
-// const socket = io('http://serverip:port'); // 이 부분만 수정 (백엔드)
-// const server = `http://${socket.io.engine.hostname}:${socket.io.engine.port}`;
-// axiosInstance.setBaseURL(server);
+const socket = io('http://localhost:10111');
+const server = `http://${socket.io.engine.hostname}:${socket.io.engine.port}`;
+axiosInstance.setBaseURL(server);
 
-// const socketStore = useSocketStore();
-// socketStore.initSocket(socket, server);
+const socketStore = useSocketStore();
+socketStore.initSocket(socket, server);
 
 app.component('the-header', TheHeader);
 app.component('the-footer', TheFooter);

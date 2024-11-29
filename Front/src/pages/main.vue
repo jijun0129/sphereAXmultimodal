@@ -5,9 +5,8 @@
 			content-style="display: flex; flex-direction: column; justify-content: space-between;"
 		>
 			<n-upload
-				multiple
-				directory-dnd
 				:max="1"
+				:on-before-upload="handleFileUpload"
 				class="mt-20 mx-auto"
 				style="width: 85%"
 			>
@@ -50,43 +49,64 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { ArchiveOutline } from '@vicons/ionicons5';
 import { useTextStore } from '../store/text.js';
 import { useRouter } from 'vue-router';
-/* import { useAxios } from '@/composables/useAxios';
-import { useSocket } from '@/composables/useSocket'; */
+import { useSocketStore } from '@/store/socket.js';
 
-/* const { axios } = useAxios();
-const { socket } = useSocket(); */
+const socket = useSocketStore();
 const router = useRouter();
-const inputText = ref('');
 const text = useTextStore();
+const inputText = ref('');
+const uploadedFile = ref(null);
+
+const handleFileUpload = file => {
+	console.log('Uploaded File:', file.file.file); // 파일 객체 출력
+	uploadedFile.value = file.file.file; // 파일 저장
+	return false; // 자동 업로드 방지
+};
+
 const onSubmit = () => {
 	text.setText(inputText.value);
+	sendMessage();
 	router.replace('/result');
 };
-// axios 및 socket 사용 방법 - 주석 처리된 부분 확인
-/* onMounted(() => {
-	// HTTP 요청 예시
-	axios
-		.get('/users')
-		.then(response => console.log(response.data))
-		.catch(error => console.error(error));
 
-	// WebSocket 연결 및 이벤트 리스닝 예시
-	socket.connect();
-	socket.on('message', data => {
+onMounted(() => {
+	// 소켓을 재연결한 뒤, 연결이 완료되었을 때 메시지를 보낼 준비를 한다.
+	socket.reconnectSocket();
+	socket.on('connect', () => {
+		console.log('소켓 연결 완료');
+		// 연결이 완료된 후에만 메시지를 보낼 수 있도록 처리
+		sendMessage();
+	});
+
+	socket.on('searchStatus', data => {
 		console.log(data);
 	});
 });
+
 onBeforeUnmount(() => {
-	// 컴포넌트가 제거되기 전에 소켓 연결 해제
-	socket.disconnect();
+	socket.removeListener();
 });
-const sendMessage = () => {
-	socket.emit('chat message', 'Hello, server!');
-}; */
+
+const sendMessage = async () => {
+	if (!uploadedFile.value || !inputText.value) {
+		console.error('이미지와 텍스트를 모두 입력하세요.');
+		return;
+	}
+
+	const reader = new FileReader();
+	reader.onload = () => {
+		const fileData = reader.result; // Base64 파일 데이터
+		socket.emit('searchStatus', {
+			text: inputText.value,
+			image: fileData,
+		});
+	};
+	reader.readAsDataURL(uploadedFile.value);
+};
 </script>
 <style scoped>
 .center {

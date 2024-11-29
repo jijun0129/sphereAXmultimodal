@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 export const useResultsStore = defineStore('Results', () => {
+	const searchId = ref('');
 	const Results = ref([
 		{
 			id: 1,
@@ -11,9 +12,12 @@ export const useResultsStore = defineStore('Results', () => {
 		},
 	]);
 
+	const setSearchId = id => {
+		searchId.value = id;
+	};
 	const setResults = Result => {
 		Results.value = Result;
 	};
 
-	return { Results, setResults };
+	return { searchId, Results, setSearchId, setResults };
 });
