@@ -84,7 +84,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-	socket.removeListener();
+	socket.disconnect();
 });
 
 const sendMessage = async () => {
@@ -114,7 +114,7 @@ const receiveMessage = async () => {
 
 		const { status, searchId, results, message } = data;
 		if (status === 'completed') {
-			resultData.setResults({ searchId, results });
+			resultData.setResults(searchId, results);
 		}
 	});
 };

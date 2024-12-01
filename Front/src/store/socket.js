@@ -59,5 +59,13 @@ export const useSocketStore = defineStore('socket', () => {
 		}
 	};
 
-	return { initSocket, reconnectSocket, emit, on, removeListener };
+	const disconnect = () => {
+		if (socket.value) {
+			socket.value.disconnect();
+		} else {
+			console.error('Socket is not initialized');
+		}
+	};
+
+	return { initSocket, reconnectSocket, emit, on, removeListener, disconnect };
 });
