@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const SearchHistory = mongoose.model('SearchHistory');
+const Bookmark = mongoose.model('Bookmark');
 
 // 검색 기록 목록 조회 (페이지네이션)
 exports.getSearchHistory = async (req, res) => {
@@ -56,6 +57,19 @@ exports.getSearchHistoryDetail = async (req, res) => {
             return res.status(404).json({ message: "Search history not found" });
         }
 
+        // 모든 이미지 URL 수집 
+        const allImageUrls = [
+            searchHistory.originalImage,
+            ...searchHistory.results.map(result => result.url)
+        ];
+
+        const bookmarks = await Bookmark.find({
+            userId: userId,
+            imageUrl: { $in: allImageUrls }
+        }).select('imageUrl');
+
+        // 북마크된 이미지 URL 집합 생성
+        const bookmarkedUrls = new Set(bookmarks.map(bookmark => bookmark.imageUrl));
 
         const response = {
             date: searchHistory.createdAt.toLocaleDateString('ko-KR', {
@@ -64,8 +78,14 @@ exports.getSearchHistoryDetail = async (req, res) => {
                 day: '2-digit'
             }).replace(/\//g, '/'),
             text: searchHistory.text,
-            originalImage: searchHistory.originalImage,
-            results: searchHistory.results.slice(0, 10)  // 최대 10개 결과 이미지
+            originalImage: {
+                url: searchHistory.originalImage,
+                isBookmarked: bookmarkedUrls.has(searchHistory.originalImage)
+            },
+            results: searchHistory.results.slice(0, 10).map(result => ({
+                url: result.url,
+                isBookmarked: bookmarkedUrls.has(result.url)
+            }))
         };
 
         res.status(200).json(response);
