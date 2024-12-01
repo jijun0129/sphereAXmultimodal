@@ -8,8 +8,10 @@ const express = require('express')
   , path = require('path');
 
 const corsOptions = {
-  origin: 'http://localhost:10111',
-  credentials: false, // 쿠키가 필요 없으므로 false로 설정
+  origin: ['http://localhost:3000', 'http://localhost:10111'],
+  credentials: false,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   optionsSuccessStatus: 200
 };
 
@@ -26,9 +28,10 @@ module.exports = function () {
     }
   });
 
-  // 기본 미들웨어 설정
-  app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
   app.use(cors(corsOptions));
+  app.use('/uploads', cors(corsOptions), express.static(path.join(__dirname, '../uploads')));
+
+  // 기본 미들웨어 설정
   app.use(compress());
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: false }));
   app.use(bodyParser.json({ limit: "50mb" }));
