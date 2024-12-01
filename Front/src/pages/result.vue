@@ -27,7 +27,6 @@ import { onMounted, onBeforeUnmount } from 'vue';
 import ImageData from '../components/ImageData.vue';
 import { useResultsStore } from '../store/results.js';
 import { useTextStore } from '../store/text.js';
-<<<<<<< HEAD
 
 const text = useTextStore();
 const Results = useResultsStore();
@@ -35,27 +34,6 @@ const Results = useResultsStore();
 const updateBookmark = ({ index, bookmark, bookmarkId }) => {
 	Results.setBookmark(index, bookmark, bookmarkId);
 };
-=======
-import { useSocketStore } from '../store/socket.js';
-
-const text = useTextStore();
-const Results = useResultsStore();
-const socket = useSocketStore();
-const messages = ref([]);
-
-onMounted(() => {
-	socket.reconnectSocket();
-	socket.on('searchStatus', data => {
-		console.log('Received message:', data);
-		messages.value.push(data);
-	});
-});
-
-onBeforeUnmount(() => {
-	console.log(messages.value);
-	socket.removeListener('searchStatus');
-});
->>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 </script>
 <style scoped>
 .n-card {
