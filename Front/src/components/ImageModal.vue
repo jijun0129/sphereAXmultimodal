@@ -5,16 +5,20 @@
 			<div class="text-center mt-5 text-xl">{{ image.date }}</div>
 			<div class="flex justify-between items-center w-full m-10">
 				<div class="w-1/2 flex justify-center">
-					<image-data :src="image.src" :bookmark="image.bookmark"></image-data>
+					<image-data
+						:url="image.url"
+						:bookmark="image.bookmark"
+						:bookmarkId="image.bookmarkId"
+						@switch-bookmark="updateBookmark"
+					></image-data>
 				</div>
 				<div class="w-1/2 text-center break-words text-lg">
-					{{ image.inputText }}
+					{{ image.text }}
 				</div>
 			</div>
 		</div>
 	</div>
 </template>
-
 <script setup>
 import ImageData from './ImageData.vue';
 
@@ -22,6 +26,11 @@ const emit = defineEmits(['close']);
 const props = defineProps(['image']);
 const close = () => {
 	emit('close');
+};
+
+const updateBookmark = ({ index, bookmark, bookmarkId }) => {
+	props.image.bookmark = bookmark;
+	props.image.bookmarkId = bookmarkId;
 };
 </script>
 

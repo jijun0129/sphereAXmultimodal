@@ -6,9 +6,13 @@
 			class="w-full grid gap-10 grid-cols-6 justify-center items-center mt-10 mx-auto"
 		>
 			<image-data
-				v-for="image in images.images"
-				:src="image.src"
-				:bookmark="image.bookmark"
+				v-if="!isLoading"
+				v-for="(image, index) in images.images"
+				:key="image.id"
+				:index="index"
+				:url="image.imageUrl"
+				:bookmark="true"
+				:bookmarkId="image.id"
 				@click="onImageClick(image)"
 				class="mt-5 cursor-pointer"
 			></image-data>
@@ -30,6 +34,7 @@ import useAxios from '../composables/useAxios.js';
 import { useUserStore } from '../store/user.js';
 const images = useImagesStore();
 const { token } = useUserStore();
+const isLoading = ref(true);
 const showImageModal = ref(false);
 const selectedImage = ref(null);
 const page = 1;
@@ -50,16 +55,36 @@ onMounted(() => {
 			},
 		})
 		.then(response => {
-			images.setImages(response.imageUrl);
-			console.log('History data:', response.data);
+			images.setImages(response.data.bookmarks);
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		})
+		.finally(() => {
+			isLoading.value = false; // 로딩 완료
+		});
+});
+
+const onImageClick = async image => {
+	await axios
+		.get(`/bookmarks/${image.id}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then(response => {
+			selectedImage.value = {
+				bookmark: true,
+				bookmarkId: image.id,
+				url: image.imageUrl,
+				date: response.data.date,
+				text: response.data.text,
+			};
 		})
 		.catch(e => {
 			console.error('Error fetching history:', e);
 		});
-});
-
-const onImageClick = image => {
-	selectedImage.value = image;
 	showImageModal.value = true;
 };
 </script>

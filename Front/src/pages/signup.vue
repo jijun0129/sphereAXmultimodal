@@ -149,13 +149,7 @@ export default defineComponent({
 								},
 							})
 							.then(response => {
-								message.success('Valid');
-								console.log('회원가입 성공:', response.data);
-								alert(
-									'회원가입이 성공하였습니다.\n' +
-										'토큰: ' +
-										response.data.token,
-								);
+								message.success('회원가입 성공');
 								router.replace('/login');
 							})
 							.catch(error => {
@@ -168,7 +162,6 @@ export default defineComponent({
 								}
 							});
 					} else {
-						console.log(errors);
 						message.error('회원가입 실패: 아이디, 비밀번호를 확인하세요. ');
 					}
 				});

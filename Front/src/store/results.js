@@ -22,8 +22,8 @@ export const useResultsStore = defineStore(
 				date: '2024//12/01',
 			}));
 		};
-		const setBookmark = (index, bookmarkId) => {
-			Results.value[index].bookmark = !Results.value[index].bookmark;
+		const setBookmark = (index, bookmark, bookmarkId) => {
+			Results.value[index].bookmark = bookmark;
 			Results.value[index].bookmarkId = bookmarkId;
 		};
 

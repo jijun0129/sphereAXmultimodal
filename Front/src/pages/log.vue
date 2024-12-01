@@ -11,8 +11,8 @@
 			class="text-base mt-10 pb-3 font-bold log-data"
 		></log-data>
 		<log-data
-			v-for="log in logs.logs"
-			:key="log.id"
+			v-for="(log, index) in logs.logs"
+			:key="index"
 			:date="log.date"
 			:text="log.text"
 			@click="onLogClick(log)"
@@ -60,15 +60,32 @@ onMounted(() => {
 		})
 		.then(response => {
 			logs.setLogs(response.data.history);
-			console.log('History data:', response.data.history);
 		})
 		.catch(e => {
 			console.error('Error fetching history:', e);
 		});
 });
 
-const onLogClick = log => {
-	selectedLog.value = log;
+const onLogClick = async log => {
+	await axios
+		.get(`/history/${log.id}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then(response => {
+			selectedLog.value = {
+				...log,
+				date: response.data.date,
+				url: response.data.originalImage.url,
+				images: response.data.results,
+			};
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+
 	showLogModal.value = true;
 };
 </script>
