@@ -1,26 +1,30 @@
 <template>
 	<header>
-		<nav>
+		<nav v-if="user.isLoggedIn">
 			<h1><router-link to="/main">스피어AX</router-link></h1>
-			<ul v-if="isLoggedIn">
+			<ul>
 				<li><router-link to="/main">검색하기</router-link></li>
 				<li><router-link to="/log">검색기록</router-link></li>
 				<li><router-link to="/bookmark">북마크</router-link></li>
 				<li>
-					<base-button to="/login" link> 로그아웃 </base-button>
+					<base-button @click="handleLogout"> 로그아웃 </base-button>
 				</li>
 			</ul>
+		</nav>
+		<nav v-else>
+			<h1><router-link to="/login">스피어AX</router-link></h1>
 		</nav>
 	</header>
 </template>
 <script setup>
-const props = defineProps({
-	isLoggedIn: {
-		type: Boolean,
-		required: false,
-		default: true,
-	},
-});
+import router from '../router/index.js';
+import { useUserStore } from '../store/user.js';
+const user = useUserStore();
+
+const handleLogout = () => {
+	user.logout();
+	router.replace('/login');
+};
 </script>
 <style scoped>
 header {

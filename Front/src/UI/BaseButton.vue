@@ -1,7 +1,7 @@
 <template>
-	<n-button v-if="!link" :class="mode">
+	<button v-if="!link" :class="mode">
 		<slot></slot>
-	</n-button>
+	</button>
 	<router-link v-else :to="to" :class="mode">
 		<slot></slot>
 	</router-link>

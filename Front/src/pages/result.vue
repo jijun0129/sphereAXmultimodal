@@ -9,23 +9,31 @@
 			class="w-11/12 grid gap-10 grid-cols-4 justify-center items-center mt-10 mx-auto"
 		>
 			<image-data
-				v-for="image in images.images"
-				:id="image.id"
-				:src="image.src"
-				:bookmark="image.bookmark"
+				v-for="(Result, index) in Results.Results"
+				:key="index"
+				:index="index"
+				:url="Result.url"
+				:searchId="Results.searchId"
+				:bookmark="Result.bookmark"
+				:bookmarkId="Result.bookmarkId"
+				@switch-bookmark="updateBookmark"
 			></image-data>
 		</div>
 	</div>
 	<the-footer></the-footer>
 </template>
 <script setup>
+import { onMounted, onBeforeUnmount } from 'vue';
 import ImageData from '../components/ImageData.vue';
-import { useImagesStore, useTextStore } from '../store';
-const props = defineProps({
-	text: String,
-});
+import { useResultsStore } from '../store/results.js';
+import { useTextStore } from '../store/text.js';
+
 const text = useTextStore();
-const images = useImagesStore();
+const Results = useResultsStore();
+
+const updateBookmark = ({ index, bookmark, bookmarkId }) => {
+	Results.setBookmark(index, bookmark, bookmarkId);
+};
 </script>
 <style scoped>
 .n-card {

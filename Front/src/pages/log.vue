@@ -11,8 +11,8 @@
 			class="text-base mt-10 pb-3 font-bold log-data"
 		></log-data>
 		<log-data
-			v-for="log in logs.logs"
-			:key="log.id"
+			v-for="(log, index) in logs.logs"
+			:key="index"
 			:date="log.date"
 			:text="log.text"
 			@click="onLogClick(log)"
@@ -34,13 +34,58 @@
 <script setup>
 import LogData from '../components/LogData.vue';
 import LogModal from '../components/LogModal.vue';
-import { useLogsStore } from '../store';
+import useAxios from '../composables/useAxios.js';
+import { useLogsStore } from '../store/logs.js';
+import { useUserStore } from '../store/user.js';
+
 const logs = useLogsStore();
+const { token } = useUserStore();
 const showLogModal = ref(false);
 const selectedLog = ref(null);
+const { axios } = useAxios();
+const page = 1;
+const limit = 10;
 
-const onLogClick = log => {
-	selectedLog.value = log;
+onMounted(() => {
+	axios
+		.get(`/history`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			params: {
+				page,
+				limit,
+			},
+		})
+		.then(response => {
+			logs.setLogs(response.data.history);
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+});
+
+const onLogClick = async log => {
+	await axios
+		.get(`/history/${log.id}`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then(response => {
+			selectedLog.value = {
+				...log,
+				date: response.data.date,
+				url: response.data.originalImage.url,
+				images: response.data.results,
+			};
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+
 	showLogModal.value = true;
 };
 </script>

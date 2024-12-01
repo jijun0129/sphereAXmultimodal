@@ -1,5 +1,5 @@
 <template>
-	<the-header :isLoggedIn="false"></the-header>
+	<the-header></the-header>
 	<div class="h-screen">
 		<n-card class="mx-auto w-5/12 mt-36">
 			<div class="w-auto flex flex-col items-center justify-center">
@@ -23,7 +23,7 @@
 							<n-col :span="24">
 								<div style="display: flex; justify-content: flex-end">
 									<n-button
-										:disabled="modelRef.id === null"
+										:disabled="!modelRef.id || !modelRef.password"
 										round
 										type="primary"
 										@click="handleValidateButtonClick"
@@ -37,7 +37,9 @@
 				</div>
 				<div class="flex justify-between items-center w-7/12 mt-16 mb-3">
 					<div>아이디가 없으신가요?</div>
-					<div><router-link to="/signup">회원가입하기</router-link></div>
+					<div class="text-blue-300">
+						<router-link to="/signup">회원가입하기</router-link>
+					</div>
 				</div>
 			</div>
 		</n-card>
@@ -49,10 +51,14 @@
 import { ref } from 'vue';
 import { useMessage } from 'naive-ui';
 import router from '@/router';
+import useAxios from '../composables/useAxios.js';
+import { useUserStore } from '../store/user.js';
 
+const axiosInstance = useAxios();
 const formRef = ref(null);
 const rPasswordFormItemRef = ref(null);
 const message = useMessage();
+const user = useUserStore();
 const modelRef = ref({
 	id: null,
 	password: null,
@@ -66,15 +72,35 @@ const handleValidateButtonClick = e => {
 	e.preventDefault();
 	formRef.value?.validate(errors => {
 		if (!errors) {
-			message.success('Valid');
-			router.replace('/main');
+			// loginRequest 객체 정의
+			const loginRequest = {
+				ID: modelRef.value.id,
+				PASSWORD: modelRef.value.password,
+			};
+
+			// POST 요청 보내기
+			axiosInstance.axios
+				.post(`/login`, loginRequest, {
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				})
+				.then(response => {
+					message.success('로그인 성공');
+					user.login(response.data.token);
+					router.replace('/main');
+				})
+				.catch(() => {
+					message.error('로그인 실패');
+				});
 		} else {
 			console.log(errors);
-			message.error('Invalid');
+			message.error('로그인 실패');
 		}
 	});
 };
 </script>
+
 <style scoped>
 .n-card {
 	border-radius: 25px;

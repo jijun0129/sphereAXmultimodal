@@ -5,10 +5,7 @@
 			<div class="flex w-full h-full m-5">
 				<div class="w-1/3 flex flex-col justify-center items-center">
 					<div class="text-center mb-10 text-xl">{{ log.date }}</div>
-					<image-data
-						:src="log.inputImage.src"
-						:bookmark="log.inputImage.bookmark"
-					></image-data>
+					<image-data :url="log.url" :bookmark="null"></image-data>
 					<div class="w-3/4 mt-10 text-center break-words text-lg">
 						{{ log.text }}
 					</div>
@@ -17,13 +14,15 @@
 					<div class="text-xl mt-3">결과 이미지</div>
 					<div class="grid gap-y-10 grid-cols-3 place-content-start mt-5">
 						<image-data
-							v-for="image in log.images"
-							:src="image.src"
-							:bookmark="image.bookmark"
+							v-for="(image, index) in log.images"
+							:key="index"
+							:index="index"
+							:url="image.url"
+							:bookmark="image.isBookmarked"
+							:bookmarkId="image.id"
+							:searchId="log.id"
+							@switch-bookmark="updateBookmark"
 						></image-data>
-					</div>
-					<div class="mt-auto mb-5">
-						<button>1</button>
 					</div>
 				</div>
 			</div>
@@ -32,15 +31,26 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import ImageData from './ImageData.vue';
+import useAxios from '../composables/useAxios.js';
 
+const { axios } = useAxios();
 const emit = defineEmits(['close']);
 const props = defineProps(['log']);
 const close = () => {
 	emit('close');
 };
-</script>
 
+const updateBookmark = ({ index, bookmark, bookmarkId }) => {
+	props.log.images[index].isBookmarked = bookmark;
+	props.log.images[index].bookmarkId = bookmarkId;
+};
+
+onMounted(() => {
+	//axios.get('/Bookmark');
+});
+</script>
 <style scoped>
 .modal-overlay {
 	position: fixed;
