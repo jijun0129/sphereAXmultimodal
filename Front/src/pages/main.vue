@@ -5,9 +5,8 @@
 			content-style="display: flex; flex-direction: column; justify-content: space-between;"
 		>
 			<n-upload
-				multiple
-				directory-dnd
 				:max="1"
+				:on-before-upload="handleFileUpload"
 				class="mt-20 mx-auto"
 				style="width: 85%"
 			>
@@ -50,43 +49,75 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { ArchiveOutline } from '@vicons/ionicons5';
 import { useTextStore } from '../store/text.js';
 import { useRouter } from 'vue-router';
-/* import { useAxios } from '@/composables/useAxios';
-import { useSocket } from '@/composables/useSocket'; */
+import { useSocketStore } from '@/store/socket.js';
+import { useUserStore } from '../store/user.js';
+import { useResultsStore } from '../store/results.js';
 
-/* const { axios } = useAxios();
-const { socket } = useSocket(); */
+const socket = useSocketStore();
 const router = useRouter();
-const inputText = ref('');
 const text = useTextStore();
+const resultData = useResultsStore();
+const { token } = useUserStore();
+const inputText = ref('');
+const uploadedFile = ref(null);
+
+const handleFileUpload = file => {
+	console.log('Uploaded File:', file.file); // 파일 객체 출력
+	uploadedFile.value = file.file; // 파일 저장
+	return false; // 자동 업로드 방지
+};
+
 const onSubmit = () => {
 	text.setText(inputText.value);
+	sendMessage();
+	receiveMessage();
 	router.replace('/result');
 };
-// axios 및 socket 사용 방법 - 주석 처리된 부분 확인
-/* onMounted(() => {
-	// HTTP 요청 예시
-	axios
-		.get('/users')
-		.then(response => console.log(response.data))
-		.catch(error => console.error(error));
 
-	// WebSocket 연결 및 이벤트 리스닝 예시
-	socket.connect();
-	socket.on('message', data => {
-		console.log(data);
-	});
+onMounted(() => {
+	socket.reconnectSocket();
+	socket.emit('authenticate', token);
 });
+
 onBeforeUnmount(() => {
-	// 컴포넌트가 제거되기 전에 소켓 연결 해제
-	socket.disconnect();
+	socket.removeListener();
 });
-const sendMessage = () => {
-	socket.emit('chat message', 'Hello, server!');
-}; */
+
+const sendMessage = async () => {
+	if (!uploadedFile.value || !inputText.value) {
+		console.log(inputText.value);
+		console.error('이미지와 텍스트를 모두 입력하세요.');
+		return;
+	}
+
+	const reader = new FileReader();
+	reader.onload = () => {
+		const fileData = reader.result; // Base64 파일 데이터
+		const base64Data = fileData.replace(/^data:image\/\w+;base64,/, '');
+		socket.emit('search', {
+			text: inputText.value,
+			image: {
+				data: base64Data, // Base64 형식 데이터
+				name: uploadedFile.value.file.name,
+			},
+		});
+	};
+	reader.readAsDataURL(uploadedFile.value.file);
+};
+const receiveMessage = async () => {
+	socket.on('searchComplete', data => {
+		console.log('Search completed successfully:', data);
+
+		const { status, searchId, results, message } = data;
+		if (status === 'completed') {
+			resultData.setResults({ searchId, results });
+		}
+	});
+};
 </script>
 <style scoped>
 .center {
