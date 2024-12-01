@@ -54,42 +54,77 @@ import { ArchiveOutline } from '@vicons/ionicons5';
 import { useTextStore } from '../store/text.js';
 import { useRouter } from 'vue-router';
 import { useSocketStore } from '@/store/socket.js';
+<<<<<<< HEAD
 import { useUserStore } from '../store/user.js';
 import { useResultsStore } from '../store/results.js';
+=======
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 
 const socket = useSocketStore();
 const router = useRouter();
 const text = useTextStore();
+<<<<<<< HEAD
 const resultData = useResultsStore();
 const { token } = useUserStore();
+=======
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 const inputText = ref('');
 const uploadedFile = ref(null);
 
 const handleFileUpload = file => {
+<<<<<<< HEAD
 	console.log('Uploaded File:', file.file); // 파일 객체 출력
 	uploadedFile.value = file.file; // 파일 저장
+=======
+	console.log('Uploaded File:', file.file.file); // 파일 객체 출력
+	uploadedFile.value = file.file.file; // 파일 저장
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 	return false; // 자동 업로드 방지
 };
 
 const onSubmit = () => {
 	text.setText(inputText.value);
 	sendMessage();
+<<<<<<< HEAD
 	receiveMessage();
+=======
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 	router.replace('/result');
 };
 
 onMounted(() => {
+<<<<<<< HEAD
 	socket.reconnectSocket();
 	socket.emit('authenticate', token);
 });
 
 onBeforeUnmount(() => {
 	socket.disconnect();
+=======
+	// 소켓을 재연결한 뒤, 연결이 완료되었을 때 메시지를 보낼 준비를 한다.
+	socket.reconnectSocket();
+	socket.on('connect', () => {
+		console.log('소켓 연결 완료');
+		// 연결이 완료된 후에만 메시지를 보낼 수 있도록 처리
+		sendMessage();
+	});
+
+	socket.on('searchStatus', data => {
+		console.log(data);
+	});
+});
+
+onBeforeUnmount(() => {
+	socket.removeListener();
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 });
 
 const sendMessage = async () => {
 	if (!uploadedFile.value || !inputText.value) {
+<<<<<<< HEAD
 		console.log(inputText.value);
+=======
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 		console.error('이미지와 텍스트를 모두 입력하세요.');
 		return;
 	}
@@ -97,6 +132,7 @@ const sendMessage = async () => {
 	const reader = new FileReader();
 	reader.onload = () => {
 		const fileData = reader.result; // Base64 파일 데이터
+<<<<<<< HEAD
 		const base64Data = fileData.replace(/^data:image\/\w+;base64,/, '');
 		socket.emit('search', {
 			text: inputText.value,
@@ -117,6 +153,14 @@ const receiveMessage = async () => {
 			resultData.setResults(searchId, results);
 		}
 	});
+=======
+		socket.emit('searchStatus', {
+			text: inputText.value,
+			image: fileData,
+		});
+	};
+	reader.readAsDataURL(uploadedFile.value);
+>>>>>>> 04627b151cbd07d9ac5dc4f8dcbdd5b8a8e64cfa
 };
 </script>
 <style scoped>
