@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useImagesStore = defineStore('Images', () => {
 	const images = ref([]);
 	const currentPage = ref(1);
-	const totalPages = ref(10);
+	const totalPages = ref(0);
 
 	const setImages = image => {
 		images.value = image;
