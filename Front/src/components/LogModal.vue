@@ -19,7 +19,7 @@
 							:index="index"
 							:url="image.url"
 							:bookmark="image.isBookmarked"
-							:bookmarkId="image.id"
+							:bookmarkId="image.bookmarkId"
 							:searchId="log.id"
 							@switch-bookmark="updateBookmark"
 						></image-data>
