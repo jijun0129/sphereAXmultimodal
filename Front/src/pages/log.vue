@@ -1,14 +1,14 @@
 <template>
 	<the-header></the-header>
 	<div
-		class="flex flex-col h-screen justify-center m-10 mx-auto"
+		class="flex flex-col h-screen justify-between m-10 mx-auto"
 		style="width: 80%"
 	>
 		<h2 class="text-2xl font-bold">검색기록</h2>
 		<log-data
 			date="날짜"
 			text="입력 텍스트"
-			class="text-base mt-10 pb-3 font-bold log-data"
+			class="text-base mt-16 pb-3 font-bold log-data"
 		></log-data>
 		<log-data
 			v-for="(log, index) in logs.logs"
@@ -19,8 +19,15 @@
 			class="text-base pt-3 pb-3 cursor-pointer log-data"
 		>
 		</log-data>
-		<div class="flex justify-center mt-auto mb-40 text-lg">
-			<button>1</button>
+		<div class="flex justify-center mt-auto mb-48 text-lg">
+			<button
+				v-for="(_, index) in logs.totalPages"
+				@click="handlePage(index)"
+				:class="{ 'font-bold': logs.currentPage === index + 1 }"
+				class="m-2"
+			>
+				{{ index + 1 }}
+			</button>
 		</div>
 	</div>
 
@@ -43,7 +50,7 @@ const { token } = useUserStore();
 const showLogModal = ref(false);
 const selectedLog = ref(null);
 const { axios } = useAxios();
-const page = 1;
+const initPage = 1;
 const limit = 10;
 
 onMounted(() => {
@@ -54,17 +61,41 @@ onMounted(() => {
 				Authorization: `Bearer ${token}`,
 			},
 			params: {
-				page,
+				page: initPage,
 				limit,
 			},
 		})
 		.then(response => {
+			logs.setCurrentPage(response.data.currentPage);
+			logs.setTotalPages(response.data.totalPages);
 			logs.setLogs(response.data.history);
 		})
 		.catch(e => {
 			console.error('Error fetching history:', e);
 		});
 });
+
+const handlePage = async index => {
+	axios
+		.get(`/history`, {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+			params: {
+				page: index + 1,
+				limit,
+			},
+		})
+		.then(response => {
+			logs.setCurrentPage(response.data.currentPage);
+			logs.setTotalPages(response.data.totalPages);
+			logs.setLogs(response.data.history);
+		})
+		.catch(e => {
+			console.error('Error fetching history:', e);
+		});
+};
 
 const onLogClick = async log => {
 	await axios
