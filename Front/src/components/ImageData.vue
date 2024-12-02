@@ -30,6 +30,7 @@ const props = defineProps([
 	'index',
 	'url',
 	'bookmark',
+	'bookmarkButton',
 ]);
 const emit = defineEmits(['switch-bookmark']);
 
@@ -38,6 +39,8 @@ const { token } = useUserStore();
 const ImageSrc = ref('');
 
 const handleBookmark = () => {
+	if (props.bookmarkButton) return;
+
 	if (props.bookmark == true) {
 		delBookmark();
 	} else {

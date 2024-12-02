@@ -16,6 +16,7 @@
 				:url="image.imageUrl"
 				:bookmark="true"
 				:bookmarkId="image.id"
+				:bookmarkButton="true"
 				@click="onImageClick(image)"
 				class="mt-5 cursor-pointer"
 			></image-data>

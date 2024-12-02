@@ -31,6 +31,8 @@ const close = () => {
 const updateBookmark = ({ index, bookmark, bookmarkId }) => {
 	props.image.bookmark = bookmark;
 	props.image.bookmarkId = bookmarkId;
+	emit('close');
+	window.location.reload();
 };
 </script>
 

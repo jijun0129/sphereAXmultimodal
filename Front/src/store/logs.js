@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useLogsStore = defineStore('logs', () => {
 	const logs = ref([]);
 	const currentPage = ref(1);
-	const totalPages = ref(10);
+	const totalPages = ref(0);
 
 	const setLogs = history => {
 		logs.value = history;
