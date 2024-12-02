@@ -74,17 +74,18 @@ const handleFileUpload = file => {
 const onSubmit = () => {
 	text.setText(inputText.value);
 	sendMessage();
-	receiveMessage();
 	router.replace('/result');
 };
 
 onMounted(() => {
-	socket.reconnectSocket();
-	socket.emit('authenticate', token);
+	if (!socket.auth) {
+		socket.emit('authenticate', token);
+	}
+	socket.on('searchComplete', data => receiveMessage(data));
 });
 
 onBeforeUnmount(() => {
-	socket.disconnect();
+	socket.removeListener('searchComplete', data => receiveMessage(data));
 });
 
 const sendMessage = async () => {
@@ -108,15 +109,13 @@ const sendMessage = async () => {
 	};
 	reader.readAsDataURL(uploadedFile.value.file);
 };
-const receiveMessage = async () => {
-	socket.on('searchComplete', data => {
-		console.log('Search completed successfully:', data);
+const receiveMessage = data => {
+	console.log('Search completed successfully:', data);
 
-		const { status, searchId, results, message } = data;
-		if (status === 'completed') {
-			resultData.setResults(searchId, results);
-		}
-	});
+	const { status, searchId, results, message } = data;
+	if (status === 'completed') {
+		resultData.setResults(searchId, results);
+	}
 };
 </script>
 <style scoped>
