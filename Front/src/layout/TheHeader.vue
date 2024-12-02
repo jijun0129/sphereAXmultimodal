@@ -1,6 +1,9 @@
 <template>
 	<header>
-		<nav v-if="user.isLoggedIn">
+		<nav v-if="!user.isLoggedIn">
+			<h1><router-link to="/login">스피어AX</router-link></h1>
+		</nav>
+		<nav v-else>
 			<h1><router-link to="/main">스피어AX</router-link></h1>
 			<ul>
 				<li><router-link to="/main">검색하기</router-link></li>
@@ -10,9 +13,6 @@
 					<base-button @click="handleLogout"> 로그아웃 </base-button>
 				</li>
 			</ul>
-		</nav>
-		<nav v-else>
-			<h1><router-link to="/login">스피어AX</router-link></h1>
 		</nav>
 	</header>
 </template>
