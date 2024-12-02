@@ -75,6 +75,7 @@ const onLogClick = async log => {
 			},
 		})
 		.then(response => {
+			console.log(response.data);
 			selectedLog.value = {
 				...log,
 				date: response.data.date,
