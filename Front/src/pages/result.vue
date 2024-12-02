@@ -23,7 +23,7 @@
 	<the-footer></the-footer>
 </template>
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onBeforeUnmount } from 'vue';
 import ImageData from '../components/ImageData.vue';
 import { useResultsStore } from '../store/results.js';
 import { useTextStore } from '../store/text.js';
@@ -34,6 +34,9 @@ const Results = useResultsStore();
 const updateBookmark = ({ index, bookmark, bookmarkId }) => {
 	Results.setBookmark(index, bookmark, bookmarkId);
 };
+onBeforeUnmount(() => {
+	Results.resetResult();
+});
 </script>
 <style scoped>
 .n-card {
