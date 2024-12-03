@@ -66,9 +66,9 @@ const inputText = ref('');
 const uploadedFile = ref(null);
 
 const handleFileUpload = file => {
-	console.log('Uploaded File:', file.file); // 파일 객체 출력
-	uploadedFile.value = file.file; // 파일 저장
-	return false; // 자동 업로드 방지
+	console.log('Uploaded File:', file.file);
+	uploadedFile.value = file.file;
+	return true;
 };
 
 const onSubmit = () => {
@@ -110,8 +110,6 @@ const sendMessage = async () => {
 	reader.readAsDataURL(uploadedFile.value.file);
 };
 const receiveMessage = data => {
-	console.log('Search completed successfully:', data);
-
 	const { status, searchId, results, message } = data;
 	if (status === 'completed') {
 		resultData.setResults(searchId, results);
