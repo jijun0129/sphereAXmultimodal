@@ -74,18 +74,17 @@ const handleFileUpload = file => {
 const onSubmit = () => {
 	text.setText(inputText.value);
 	sendMessage();
-	router.replace('/result');
 };
 
 onMounted(() => {
 	if (!socket.auth) {
 		socket.emit('authenticate', token);
 	}
-	socket.on('searchComplete', data => receiveMessage(data));
+	socket.on('searchComplete', receiveMessage);
 });
 
 onBeforeUnmount(() => {
-	socket.removeListener('searchComplete', data => receiveMessage(data));
+	socket.removeListener('searchComplete', receiveMessage);
 });
 
 const sendMessage = async () => {
@@ -113,6 +112,7 @@ const receiveMessage = data => {
 	const { status, searchId, results, message } = data;
 	if (status === 'completed') {
 		resultData.setResults(searchId, results);
+		router.replace('/result');
 	}
 };
 </script>
