@@ -49,7 +49,7 @@
 import ImageData from '../components/ImageData.vue';
 import ImageModal from '../components/ImageModal.vue';
 import { useImagesStore } from '../store/images.js';
-import { onMounted } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 import useAxios from '../composables/useAxios.js';
 import { useUserStore } from '../store/user.js';
 const images = useImagesStore();
@@ -57,12 +57,14 @@ const { token } = useUserStore();
 const isLoading = ref(true);
 const showImageModal = ref(false);
 const selectedImage = ref(null);
-const initPage = 1;
 const limit = 18;
 
 const { axios } = useAxios();
 
 onMounted(() => {
+	if (images.images.length === 1) {
+		images.setCurrentPage(images.currentPage - 1);
+	}
 	axios
 		.get(`/bookmarks`, {
 			headers: {
@@ -70,7 +72,7 @@ onMounted(() => {
 				Authorization: `Bearer ${token}`,
 			},
 			params: {
-				page: initPage,
+				page: images.currentPage,
 				limit,
 			},
 		})
@@ -87,6 +89,10 @@ onMounted(() => {
 		});
 });
 
+onBeforeUnmount(() => {
+	images.setCurrentPage(1);
+});
+
 const handlePage = async index => {
 	axios
 		.get(`/bookmarks`, {
@@ -100,9 +106,9 @@ const handlePage = async index => {
 			},
 		})
 		.then(response => {
+			images.setImages(response.data.bookmarks);
 			images.setCurrentPage(response.data.currentPage);
 			images.setTotalPages(response.data.totalPages);
-			images.setImages(response.data.bookmarks);
 		})
 		.catch(e => {
 			console.error('Error fetching history:', e);

@@ -50,7 +50,7 @@ a.router-link-active {
 }
 
 h1 {
-	font-size: large;
+	font-size: 20px;
 	margin: 0;
 }
 
@@ -74,6 +74,7 @@ header nav {
 }
 
 header ul {
+	font-size: 15px;
 	list-style: none;
 	margin: 0;
 	padding: 0;

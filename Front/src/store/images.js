@@ -1,31 +1,37 @@
 import { defineStore } from 'pinia';
 
-export const useImagesStore = defineStore('Images', () => {
-	const images = ref([]);
-	const currentPage = ref(1);
-	const totalPages = ref(0);
+export const useImagesStore = defineStore(
+	'Images',
+	() => {
+		const images = ref([]);
+		const currentPage = ref(1);
+		const totalPages = ref(0);
 
-	const setImages = image => {
-		images.value = image;
-	};
+		const setImages = image => {
+			images.value = image;
+		};
 
-	const setCurrentPage = current => {
-		currentPage.value = current;
-	};
+		const setCurrentPage = current => {
+			currentPage.value = current;
+		};
 
-	const setTotalPages = total => {
-		totalPages.value = total;
-		if (total > 10) {
-			totalPages.value = 10;
-		}
-	};
+		const setTotalPages = total => {
+			totalPages.value = total;
+			if (total > 10) {
+				totalPages.value = 10;
+			}
+		};
 
-	return {
-		images,
-		currentPage,
-		totalPages,
-		setImages,
-		setCurrentPage,
-		setTotalPages,
-	};
-});
+		return {
+			images,
+			currentPage,
+			totalPages,
+			setImages,
+			setCurrentPage,
+			setTotalPages,
+		};
+	},
+	{
+		persist: true, // 이 옵션으로 자동 저장 활성화
+	},
+);
