@@ -39,6 +39,7 @@
 	></log-modal>
 </template>
 <script setup>
+import { onBeforeUnmount } from 'vue';
 import LogData from '../components/LogData.vue';
 import LogModal from '../components/LogModal.vue';
 import useAxios from '../composables/useAxios.js';
@@ -50,7 +51,6 @@ const { token } = useUserStore();
 const showLogModal = ref(false);
 const selectedLog = ref(null);
 const { axios } = useAxios();
-const initPage = 1;
 const limit = 10;
 
 onMounted(() => {
@@ -61,7 +61,7 @@ onMounted(() => {
 				Authorization: `Bearer ${token}`,
 			},
 			params: {
-				page: initPage,
+				page: logs.currentPage,
 				limit,
 			},
 		})
@@ -73,6 +73,10 @@ onMounted(() => {
 		.catch(e => {
 			console.error('Error fetching history:', e);
 		});
+});
+
+onBeforeUnmount(() => {
+	logs.setCurrentPage(1);
 });
 
 const handlePage = async index => {
