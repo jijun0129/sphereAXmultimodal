@@ -23,6 +23,7 @@ module.exports = function () {
     pingTimeout: 600000,
     pingInterval: 300000,
     upgradeTimeout: 30000,
+    maxHttpBufferSize: 1e8,
     cors: {
       origin: '*',
     }
