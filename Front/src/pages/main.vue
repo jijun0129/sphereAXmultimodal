@@ -1,7 +1,11 @@
 <template>
 	<the-header></the-header>
 	<div class="h-screen flex justify-center mt-36">
+		<n-card v-if="isLoading" content-style="display: flex;">
+			<loading-spinner></loading-spinner>
+		</n-card>
 		<n-card
+			v-else
 			content-style="display: flex; flex-direction: column; justify-content: space-between;"
 		>
 			<n-upload
@@ -56,6 +60,7 @@ import { useRouter } from 'vue-router';
 import { useSocketStore } from '@/store/socket.js';
 import { useUserStore } from '../store/user.js';
 import { useResultsStore } from '../store/results.js';
+import LoadingSpinner from '../components/LoadingSpinner.vue';
 
 const socket = useSocketStore();
 const router = useRouter();
@@ -64,6 +69,7 @@ const resultData = useResultsStore();
 const { token } = useUserStore();
 const inputText = ref('');
 const uploadedFile = ref(null);
+const isLoading = ref(false);
 
 const handleFileUpload = file => {
 	console.log('Uploaded File:', file.file);
@@ -94,6 +100,8 @@ const sendMessage = async () => {
 		return;
 	}
 
+	isLoading.value = true;
+
 	const reader = new FileReader();
 	reader.onload = () => {
 		const fileData = reader.result; // Base64 파일 데이터
@@ -110,6 +118,7 @@ const sendMessage = async () => {
 };
 const receiveMessage = data => {
 	const { status, searchId, results, message } = data;
+	isLoading.value = false;
 	if (status === 'completed') {
 		resultData.setResults(searchId, results);
 		router.replace('/result');
